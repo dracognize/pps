@@ -13,7 +13,7 @@ run = "cmake -E remove_directory build"
 
 [tasks.dev]
 depends = ["build"]
-run = "build/pps"
+run = "python scripts/run.py"
 
 [tasks.rebuild]
 run = [
