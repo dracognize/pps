@@ -1,11 +1,24 @@
-[tasks.build]
-run = "cmake --build build/"
-
-[tasks.clean]
-run = "find build/ -mindepth 1 -delete"
+[tasks.bootstrap]
+run = """
+for tool in cmake ninja mold; do
+	if command -v "$tool" >/dev/null 2>&1; then
+		echo "$tool found: $(command -v "$tool")"
+	else
+		echo "$tool not found, installing with Mise..."
+		mise use --global "$tool@latest"
+	fi
+done
+"""
 
 [tasks.configure]
-run = "cmake -S . -B build -G Ninja"
+run = "cmake -S . -B build -G Ninja -DCMAKE_LINKER_TYPE=MOLD"
+
+[tasks.build]
+depends = ["configure"]
+run = "cmake --build build"
+
+[tasks.clean]
+run = "cmake -E remove_directory build"
 
 [tasks.dev]
 depends = ["build"]
@@ -13,7 +26,8 @@ run = "build/pps"
 
 [tasks.rebuild]
 run = [
-    "mise run clean",
-    "mise run configure",
-    "mise run dev"
+	"mise run clean",
+	"mise run bootstrap",
+	"mise run configure",
+	"mise run dev",
 ]
