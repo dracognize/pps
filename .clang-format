@@ -1,0 +1,36 @@
+BasedOnStyle: LLVM
+
+UseTab: Always
+TabWidth: 4
+IndentWidth: 4
+ContinuationIndentWidth: 4
+
+AccessModifierOffset: 0
+IndentAccessModifiers: true
+
+ColumnLimit: 100
+
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortBlocksOnASingleLine: Never
+
+PointerAlignment: Right
+ReferenceAlignment: Right
+
+BinPackArguments: false
+BinPackParameters: false
+
+SortIncludes: true
+IncludeBlocks: Preserve
+
+AlignConsecutiveAssignments:
+    Enabled: true
+    AcrossEmptyLines: false
+    AcrossComments: false
+
+AlignConsecutiveDeclarations:
+    Enabled: true
+    AcrossEmptyLines: false
+    AcrossComments: false
+
+NamespaceIndentation: All
