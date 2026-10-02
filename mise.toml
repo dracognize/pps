@@ -1,0 +1,19 @@
+[tasks.build]
+run = "cmake --build build/"
+
+[tasks.clean]
+run = "find build/ -mindepth 1 -delete"
+
+[tasks.configure]
+run = "cmake -S . -B build -G Ninja"
+
+[tasks.dev]
+depends = ["build"]
+run = "build/pps"
+
+[tasks.rebuild]
+run = [
+    "mise run clean",
+    "mise run configure",
+    "mise run dev"
+]
