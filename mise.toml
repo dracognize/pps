@@ -1,17 +1,8 @@
 [tasks.bootstrap]
-run = """
-for tool in cmake ninja mold; do
-	if command -v "$tool" >/dev/null 2>&1; then
-		echo "$tool found: $(command -v "$tool")"
-	else
-		echo "$tool not found, installing with Mise..."
-		mise use --global "$tool@latest"
-	fi
-done
-"""
+run = "python bootstrap.py"
 
 [tasks.configure]
-run = "cmake -S . -B build -G Ninja -DCMAKE_LINKER_TYPE=MOLD"
+run = "cmake -S . -B build -G Ninja"
 
 [tasks.build]
 depends = ["configure"]
