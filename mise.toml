@@ -1,5 +1,5 @@
 [tasks.bootstrap]
-run = "python bootstrap.py"
+run = "python scripts/bootstrap.py"
 
 [tasks.configure]
 run = "cmake -S . -B build -G Ninja"
