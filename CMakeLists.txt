@@ -15,6 +15,9 @@ set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
+# Needed: pps_lib links into the Python shared module.
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 include(FetchContent)
 
 find_package(ftxui QUIET)
@@ -37,21 +40,64 @@ if(NOT fmt_FOUND)
 	FetchContent_MakeAvailable(fmt)
 endif()
 
-add_executable(
-	pps
-	main.cpp
+# Core math library: shared by the CLI and the Python module.
+add_library(
+	pps_lib
+	STATIC
 	src/math_object.cpp
 	src/chapter1/interpolation.cpp
 	src/chapter1/horner.cpp
 )
 
 target_include_directories(
+	pps_lib
+	PUBLIC inc/
+)
+
+target_link_libraries(
+	pps_lib
+	PUBLIC ftxui::ftxui
+	PUBLIC fmt::fmt
+)
+
+add_executable(
 	pps
-	PRIVATE inc/
+	main.cpp
 )
 
 target_link_libraries(
 	pps
-	PRIVATE ftxui::ftxui
-	PRIVATE fmt::fmt
+	PRIVATE pps_lib
 )
+
+# Python module (import pps). Prefers a system-installed pybind11,
+# falls back to FetchContent only if none is found.
+find_package(Python COMPONENTS Interpreter Development QUIET)
+if(Python_FOUND)
+	find_package(pybind11 QUIET)
+	if(NOT pybind11_FOUND)
+		FetchContent_Declare(
+			pybind11
+			GIT_REPOSITORY https://github.com/pybind/pybind11.git
+			GIT_TAG v3.0.1
+		)
+		FetchContent_MakeAvailable(pybind11)
+	endif()
+
+	pybind11_add_module(
+		pps_py
+		python/bindings.cpp
+	)
+
+	target_link_libraries(
+		pps_py
+		PRIVATE pps_lib
+	)
+
+	set_target_properties(
+		pps_py
+		PROPERTIES OUTPUT_NAME pps
+	)
+else()
+	message(STATUS "Python Development not found, skipping pps Python module")
+endif()

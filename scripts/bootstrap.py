@@ -9,7 +9,7 @@ for tool in TOOLS:
         print(f"{tool} found: {shutil.which(tool)}")
     else:
         print(f"{tool} not found, installing with Mise...")
-        subprocess.run(
+        _ = subprocess.run(
             ["mise", "use", "--global", f"{tool}@latest"],
             check=True,
         )

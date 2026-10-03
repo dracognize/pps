@@ -1,29 +1,54 @@
+[env]
+PYTHONPATH = "{{config_root}}/build"
+
+# ---------- shared ----------
+
 [tasks.bootstrap]
+description = "Ensure cmake and ninja are available"
 run = "python scripts/bootstrap.py"
 
 [tasks.configure]
+description = "Configure the CMake build tree"
 run = "cmake -S . -B build -G Ninja"
 
 [tasks.build]
+description = "Build everything (C++ exe + Python module)"
 depends = ["configure"]
 run = "cmake --build build"
 
 [tasks.clean]
+description = "Remove the build tree"
 run = "cmake -E remove_directory build"
 
-[tasks.run]
+# ---------- python ----------
+
+[tasks."py:run"]
+description = "Run main.py (or a given file) against the compiled pps module"
+depends = ["build"]
 run = "python scripts/run.py"
 
+# ---------- c++ ----------
+
+[tasks."cpp:build"]
+description = "Build only the C++ demo executable"
+depends = ["configure"]
+run = "cmake --build build --target pps"
+
+[tasks."cpp:run"]
+description = "Run the C++ entry point (main.cpp against pps_lib)"
+depends = ["cpp:build"]
+run = "./build/pps"
+
+# ---------- aliases (default: C++ — library development) ----------
+
+[tasks.run]
+description = "Default entry point (same as cpp:run)"
+depends = ["cpp:run"]
+
 [tasks.dev]
-run = [
-	{task = "build"},
-	{task = "run"},
-]
+description = "Build everything, then run the C++ entry point"
+depends = ["build", "run"]
 
 [tasks.rebuild]
-run = [
-	{task = "bootstrap"},
-	{task = "clean"},
-	{task = "build"},
-	{task = "run"},
-]
+description = "Fresh bootstrap + clean build + run"
+depends = ["bootstrap", "clean", "build", "run"]

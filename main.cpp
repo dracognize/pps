@@ -4,6 +4,8 @@
 
 #include <fmt/base.h>
 
+// C++ entry point: code against pps_lib here.
+// Alternative: code in Python in main.py against the pps module.
 auto main() -> int {
 	Polynomial poly = {0, 0, 0, 0, 0, 0, 1};
 	Real	   x	= 2;
