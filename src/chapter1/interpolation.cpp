@@ -71,7 +71,7 @@ namespace detail {
 
 		Render(screen, document);
 		screen.Print();
-
+		screen.ResetPosition();
 		fmt::println("");
 	}
 

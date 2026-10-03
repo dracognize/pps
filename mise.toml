@@ -11,14 +11,19 @@ run = "cmake --build build"
 [tasks.clean]
 run = "cmake -E remove_directory build"
 
-[tasks.dev]
-depends = ["build"]
+[tasks.run]
 run = "python scripts/run.py"
+
+[tasks.dev]
+run = [
+	{task = "build"},
+	{task = "run"},
+]
 
 [tasks.rebuild]
 run = [
-	"mise run clean",
-	"mise run bootstrap",
-	"mise run configure",
-	"mise run dev",
+	{task = "bootstrap"},
+	{task = "clean"},
+	{task = "build"},
+	{task = "run"},
 ]
