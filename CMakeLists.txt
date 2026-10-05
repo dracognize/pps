@@ -45,6 +45,7 @@ add_library(
 	pps_lib
 	STATIC
 	src/math_object.cpp
+	src/ui/table.cpp
 	src/chapter1/interpolation.cpp
 	src/chapter1/horner.cpp
 )

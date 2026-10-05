@@ -1,0 +1,84 @@
+/* Yue theme port for the mdBook engine.
+   Same palette family as the old doxygen-awesome theme: light mode is
+   Yue Sun (warm cream, muted teal-blue accents), dark modes are
+   Yue Eclipse (near-black, pastel periwinkle/mint/pink/cream).
+   mdBook switches themes by class on <html>; .light is restyled here,
+   and both dark themes (.coal, .navy) get the Eclipse treatment so the
+   reader keeps the same look whichever dark theme is picked. */
+
+.light {
+    --color-scheme: light;
+    --bg: #faf4eb;
+    --fg: #403e3c;
+    --sidebar-bg: #ebe4dc;
+    --sidebar-fg: #403e3c;
+    --sidebar-nonlink: #736f6c;
+    --sidebar-active: #55818f;
+    --sidebar-spacer: #dcd6cf;
+    --scrollbar: #c9c2b8;
+    --icons: #736f6c;
+    --icons-hover: #55818f;
+    --links: #55818f;
+    --inline-code-color: #915d8b;
+    --theme-popup-bg: #faf4eb;
+    --theme-popup-border: #dcd6cf;
+    --theme-hover: rgba(85, 129, 143, 0.12);
+    --quote-bg: #ebe4dc;
+    --quote-border: #dcd6cf;
+    --table-border-color: #dcd6cf;
+    --table-header-bg: #e5dfd6;
+    --table-alternate-bg: rgba(188, 168, 143, 0.08);
+    --searchbar-border-color: #dcd6cf;
+    --searchbar-bg: #fcf6ed;
+    --searchbar-fg: #403e3c;
+    --searchbar-shadow-color: rgba(64, 62, 60, 0.1);
+    --searchresults-header-fg: #736f6c;
+    --searchresults-border-color: #dcd6cf;
+    --searchresults-li-bg: #ebe4dc;
+    --search-mark-bg: rgba(214, 137, 60, 0.3);
+    --content-max-width: 1000px;
+}
+
+.coal,
+.navy {
+    --color-scheme: dark;
+    --bg: #000000;
+    --fg: #dfdfdf;
+    --sidebar-bg: #0d0d0f;
+    --sidebar-fg: #dfdfdf;
+    --sidebar-nonlink: #9a9a9a;
+    --sidebar-active: #b6c6ff;
+    --sidebar-spacer: #999999;
+    --scrollbar: #3a3a3e;
+    --icons: #9a9a9a;
+    --icons-hover: #ceffff;
+    --links: #b6c6ff;
+    --inline-code-color: #e2ffcc;
+    --theme-popup-bg: #0d0d0f;
+    --theme-popup-border: #999999;
+    --theme-hover: rgba(182, 198, 255, 0.12);
+    --quote-bg: #0d0d0f;
+    --quote-border: #999999;
+    --table-border-color: #999999;
+    --table-header-bg: #1a1a1e;
+    --table-alternate-bg: rgba(182, 198, 255, 0.05);
+    --searchbar-border-color: #999999;
+    --searchbar-bg: #0d0d0f;
+    --searchbar-fg: #dfdfdf;
+    --searchbar-shadow-color: rgba(0, 0, 0, 0.6);
+    --searchresults-header-fg: #9a9a9a;
+    --searchresults-border-color: #999999;
+    --searchresults-li-bg: #1a1a1e;
+    --search-mark-bg: rgba(255, 245, 194, 0.3);
+    --content-max-width: 1000px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+}
+
+code {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo,
+        Consolas, monospace;
+}

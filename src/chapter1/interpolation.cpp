@@ -1,6 +1,7 @@
 #include <chapter1/interpolation.hpp>
 #include <config.hpp>
 #include <math_object.hpp>
+#include <ui/table.hpp>
 
 #include <cmath>
 #include <cstddef>
@@ -9,11 +10,6 @@
 #include <vector>
 
 #include <fmt/format.h>
-#include <ftxui/dom/elements.hpp>
-#include <ftxui/dom/node.hpp>
-#include <ftxui/dom/table.hpp>
-#include <ftxui/screen/color.hpp>
-#include <ftxui/screen/screen.hpp>
 
 namespace detail {
 
@@ -33,15 +29,15 @@ namespace detail {
 	}
 
 	auto render_nodes_table(const RealList &nodes) -> void {
-		using namespace ftxui;
-
 		std::vector<std::string> header = {"i", "x_i"};
 
 		std::vector<std::vector<std::string>> rows;
+		rows.reserve(nodes.size() + 1);
 		rows.push_back(header);
 
 		for (std::size_t i = 0; i < nodes.size(); i++) {
 			std::vector<std::string> row;
+			row.reserve(2);
 
 			row.push_back(fmt::format("{}", i));
 
@@ -53,31 +49,12 @@ namespace detail {
 			rows.push_back(row);
 		}
 
-		auto table = Table(rows);
-
-		table.SelectRow(0).Decorate(color(Color::Cyan));
-
-		table.SelectAll().Border(LIGHT);
-		table.SelectAll().Separator(LIGHT);
-
-		table.SelectRow(0).DecorateCells(bold);
-		table.SelectRow(0).DecorateCells(hcenter);
-
-		table.SelectColumn(0).DecorateCells(hcenter | size(WIDTH, GREATER_THAN, 20));
-		table.SelectColumn(1).DecorateCells(hcenter | size(WIDTH, GREATER_THAN, 20));
-
-		auto document = table.Render();
-		auto screen	  = Screen::Create(Dimension::Fit(document, true));
-
-		Render(screen, document);
-		screen.Print();
-		screen.ResetPosition();
-		fmt::println("");
+		ui::render_table(rows, 20);
 	}
 
 } // namespace detail
 
 auto display_chebyshev_nodes(Real lower, Real upper, SizeType num_nodes) -> void {
-	auto nodes = detail::generate_chebyshev_nodes(lower, upper, num_nodes);
+	const auto nodes = detail::generate_chebyshev_nodes(lower, upper, num_nodes);
 	detail::render_nodes_table(nodes);
 }

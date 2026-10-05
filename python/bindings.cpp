@@ -2,6 +2,18 @@
 #include <chapter1/interpolation.hpp>
 #include <math_object.hpp>
 
+// Python bindings: thin adapters over the C++ API.
+//
+// Rules:
+//   - Pure compute lives in `detail::` and is exposed as `pps.detail`;
+//     call `detail::` directly, never via a forwarding wrapper.
+//   - `display_*` stays top-level: compute via `detail::` then render.
+//   - Argument order mirrors C++: point first `(x, poly)`, dividend first
+//     `(a, b)`, interval first `(lower, upper, n)`.
+//   - `Polynomial | list[float]` inputs arrive as `vector<Real>` and convert
+//     via `to_poly`; async validation (`check_*`) maps C++ preconditions to
+//     Python `ValueError`s.
+
 #include <algorithm>
 #include <cstddef>
 #include <stdexcept>
@@ -15,10 +27,12 @@ namespace py = pybind11;
 
 namespace {
 
+	/// Convert a Python list of ascending coeffs into the C++ type.
 	auto to_poly(const std::vector<Real> &coeffs) -> Polynomial {
 		return Polynomial(coeffs.begin(), coeffs.end());
 	}
 
+	/// Element-wise add (pads the shorter operand with zeros).
 	auto add_poly(const Polynomial &a, const Polynomial &b) -> Polynomial {
 		Polynomial out(std::max(a.size(), b.size()), 0.0);
 		for (std::size_t i = 0; i < a.size(); ++i)
@@ -28,6 +42,7 @@ namespace {
 		return out;
 	}
 
+	/// Element-wise subtract (pads the shorter operand with zeros).
 	auto sub_poly(const Polynomial &a, const Polynomial &b) -> Polynomial {
 		Polynomial out(std::max(a.size(), b.size()), 0.0);
 		for (std::size_t i = 0; i < a.size(); ++i)
@@ -37,6 +52,7 @@ namespace {
 		return out;
 	}
 
+	/// Naive O(n*m) convolution; empty input yields the zero polynomial.
 	auto mul_poly(const Polynomial &a, const Polynomial &b) -> Polynomial {
 		if (a.empty() || b.empty())
 			return {};
@@ -47,6 +63,7 @@ namespace {
 		return out;
 	}
 
+	/// Enforce the Horner precondition: divisor must be degree 1 (2 coeffs).
 	auto check_degree_one(const Polynomial &b) -> void {
 		if (b.size() != 2) {
 			throw std::invalid_argument(fmt::format(
@@ -54,12 +71,21 @@ namespace {
 		}
 	}
 
+	/// Enforce `num_nodes >= 1` before narrowing `long long` -> `SizeType`.
 	auto check_node_count(long long n) -> SizeType {
 		if (n < 1) {
 			throw std::invalid_argument(
 				fmt::format("num_nodes must be a positive integer, got {}", n));
 		}
 		return static_cast<SizeType>(n);
+	}
+
+	/// Enforce `k >= 0` before narrowing `long long` -> `SizeType`.
+	auto check_derivative_order(long long k) -> SizeType {
+		if (k < 0) {
+			throw std::invalid_argument(fmt::format("k must be a non-negative integer, got {}", k));
+		}
+		return static_cast<SizeType>(k);
 	}
 
 } // namespace
@@ -75,6 +101,7 @@ PYBIND11_MODULE(pps, m) {
 	m.attr("RealList")		  = builtins.attr("list");
 	m.attr("SizeType")		  = builtins.attr("int");
 
+	// ---- Math types (mirror `inc/math_object.hpp`) ----
 	py::class_<Polynomial>(m, "Polynomial")
 		.def(py::init([](const std::vector<Real> &coeffs) { return to_poly(coeffs); }),
 			 py::arg("coeffs") = std::vector<Real>{},
@@ -133,6 +160,9 @@ PYBIND11_MODULE(pps, m) {
 		.def("__repr__", [](const Polynomial &p) { return fmt::format("Polynomial({})", p); })
 		.def("__str__", [](const Polynomial &p) { return fmt::format("{}", p); });
 
+	// `DerivativeHistory` is intentionally *not* bound: it is a display-only
+	// tableau (`quotients` + `remainders`) consumed by `display_kth_derivative`.
+	// Python users needing the numbers should call `kth_derivative` per order.
 	py::class_<PolynomialDivision>(m, "PolynomialDivision")
 		.def_readonly("quotient", &PolynomialDivision::quotient)
 		.def_readonly("remainder", &PolynomialDivision::remainder)
@@ -141,8 +171,10 @@ PYBIND11_MODULE(pps, m) {
 				"PolynomialDivision(quotient={}, remainder={})", d.quotient, d.remainder);
 		});
 
-	m.def(
-		"evaluate",
+	// ---- Pure compute (mirror C++ detail::; no I/O) ----
+	py::module_ detail = m.def_submodule("detail", "Core compute API (mirrors C++ detail::)");
+	detail.def(
+		"evaluate_polynomial",
 		[](Real x, const std::vector<Real> &coeffs) {
 			return detail::evaluate_polynomial(x, to_poly(coeffs));
 		},
@@ -150,20 +182,20 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("poly"),
 		"Evaluate P(x) with Horner scheme. poly may be a Polynomial or a plain list.");
 
-	m.def(
-		"horner_division",
+	detail.def(
+		"divide_by_linear",
 		[](const std::vector<Real> &a, const std::vector<Real> &b) {
 			Polynomial pa = to_poly(a);
 			Polynomial pb = to_poly(b);
 			check_degree_one(pb);
-			return detail::horner_division(pa, pb);
+			return detail::divide_by_linear(pa, pb);
 		},
 		py::arg("a"),
 		py::arg("b"),
 		"Divide a by degree-1 b. Returns PolynomialDivision(quotient, remainder).");
 
-	m.def(
-		"chebyshev_nodes",
+	detail.def(
+		"generate_chebyshev_nodes",
 		[](Real lower, Real upper, long long num_nodes) {
 			return detail::generate_chebyshev_nodes(lower, upper, check_node_count(num_nodes));
 		},
@@ -172,6 +204,17 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("num_nodes"),
 		"Chebyshev nodes on [lower, upper] as a list of floats.");
 
+	detail.def(
+		"kth_derivative_value",
+		[](Real c, const std::vector<Real> &coeffs, long long k) {
+			return detail::kth_derivative_value(c, to_poly(coeffs), check_derivative_order(k));
+		},
+		py::arg("c"),
+		py::arg("poly"),
+		py::arg("k"),
+		"Value of P^{(k)}(c) via repeated Horner division. Returns 0 when k > deg(P).");
+
+	// ---- Display (compute + render to stdout; return None) ----
 	m.def(
 		"display_polynomial_evaluation",
 		[](Real x, const std::vector<Real> &coeffs) {
@@ -199,4 +242,13 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("lower"),
 		py::arg("upper"),
 		py::arg("num_nodes"));
+
+	m.def(
+		"display_kth_derivative",
+		[](Real c, const std::vector<Real> &coeffs, long long k) {
+			display_kth_derivative(c, to_poly(coeffs), check_derivative_order(k));
+		},
+		py::arg("c"),
+		py::arg("poly"),
+		py::arg("k"));
 }

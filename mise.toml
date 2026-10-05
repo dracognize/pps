@@ -4,11 +4,20 @@ PYTHONPATH = "{{config_root}}/build"
 # ---------- shared ----------
 
 [tasks.bootstrap]
-description = "Ensure cmake and ninja are available"
-run = "python scripts/bootstrap.py"
+description = "Ensure cmake and ninja are available (build/run only)"
+run = "python scripts/bootstrap.py build"
+
+[tasks.bootstrap-docs]
+description = "Ensure mdbook is available (docs only)"
+run = "python scripts/bootstrap.py docs"
+
+[tasks.bootstrap-all]
+description = "Ensure cmake, ninja and mdbook are available (CI / fresh setup)"
+run = "python scripts/bootstrap.py all"
 
 [tasks.configure]
 description = "Configure the CMake build tree"
+depends = ["bootstrap"]
 run = "cmake -S . -B build -G Ninja"
 
 [tasks.build]
@@ -20,35 +29,40 @@ run = "cmake --build build"
 description = "Remove the build tree"
 run = "cmake -E remove_directory build"
 
+[tasks.docs]
+description = "Build the mdBook docs (build/docs/index.html)"
+depends = ["bootstrap-docs"]
+run = "mdbook build"
+
 # ---------- python ----------
 
-[tasks."py:run"]
+[tasks."py::run"]
 description = "Run main.py (or a given file) against the compiled pps module"
 depends = ["build"]
 run = "python scripts/run.py"
 
 # ---------- c++ ----------
 
-[tasks."cpp:build"]
+[tasks."cpp::build"]
 description = "Build only the C++ demo executable"
 depends = ["configure"]
 run = "cmake --build build --target pps"
 
-[tasks."cpp:run"]
+[tasks."cpp::run"]
 description = "Run the C++ entry point (main.cpp against pps_lib)"
-depends = ["cpp:build"]
+depends = ["cpp::build"]
 run = "./build/pps"
 
 # ---------- aliases (default: C++ — library development) ----------
 
 [tasks.run]
-description = "Default entry point (same as cpp:run)"
-depends = ["cpp:run"]
+description = "Default entry point (same as cpp::run)"
+depends = ["cpp::run"]
 
 [tasks.dev]
 description = "Build everything, then run the C++ entry point"
-depends = ["build", "run"]
+run = [{ task = "build" }, { task = "run" }]
 
 [tasks.rebuild]
-description = "Fresh bootstrap + clean build + run"
-depends = ["bootstrap", "clean", "build", "run"]
+description = "Fresh build bootstrap + clean build + run (no docs toolchain)"
+run = [{ task = "bootstrap" }, { task = "clean" }, { task = "build" }, { task = "run" }]

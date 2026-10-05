@@ -45,6 +45,7 @@ namespace {
 
 } // namespace
 
+/// @cond INTERNAL
 auto fmt::formatter<Polynomial>::format(const Polynomial &poly, fmt::format_context &ctx) const
 	-> decltype(ctx.out()) {
 	std::vector<std::pair<SizeType, Real>> nonzero;
@@ -71,3 +72,4 @@ auto fmt::formatter<Polynomial>::format(const Polynomial &poly, fmt::format_cont
 
 	return fmt::format_to(ctx.out(), "{}", out);
 }
+/// @endcond

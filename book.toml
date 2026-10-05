@@ -1,0 +1,12 @@
+[book]
+title = "pps"
+description = "Numerical methods playground (C++23 + FTXUI + Python)"
+src = "docs"
+
+[build]
+build-dir = "build/docs"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "coal"
+additional-css = ["docs/theme/pps.css"]
