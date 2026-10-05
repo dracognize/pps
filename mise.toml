@@ -39,7 +39,7 @@ run = "mdbook build"
 [tasks."py::run"]
 description = "Run main.py (or a given file) against the compiled pps module"
 depends = ["build"]
-run = "python scripts/run.py"
+run = "python scripts/run.py py"
 
 # ---------- c++ ----------
 
@@ -51,7 +51,7 @@ run = "cmake --build build --target pps"
 [tasks."cpp::run"]
 description = "Run the C++ entry point (main.cpp against pps_lib)"
 depends = ["cpp::build"]
-run = "./build/pps"
+run = "python scripts/run.py cpp"
 
 # ---------- aliases (default: C++ — library development) ----------
 

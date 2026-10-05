@@ -1,9 +1,9 @@
 #include <ui/table.hpp>
 
+#include <iostream>
 #include <string>
 #include <vector>
 
-#include <fmt/format.h>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/table.hpp>
 #include <ftxui/screen/screen.hpp>
@@ -34,8 +34,14 @@ namespace ui {
 
 		Render(screen, document);
 		screen.Print();
-		screen.ResetPosition();
-		fmt::println("");
+		// NOTE: `ResetPosition()` only *returns* the cursor-up sequence for
+		// animation loops — it prints nothing, so calling it here is a no-op.
+		// End the one-shot table on the same stream instead (upstream pattern
+		// from FTXUI's `examples/dom/table.cpp`): on Windows consoles (VT
+		// mode, which FTXUI enables) a bare `\n` moves down without returning
+		// the carriage, so anything printed after `Print()` would start
+		// mid-line and misalign every following row.
+		std::cout << std::endl;
 	}
 
 } // namespace ui

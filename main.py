@@ -1,14 +1,6 @@
 """Python demo mirroring main.cpp (detail compute + display_*)."""
 
-from pps import (
-    Polynomial,
-    Real,
-    detail,
-    display_chebyshev_nodes,
-    display_horner_division,
-    display_kth_derivative,
-    display_polynomial_evaluation,
-)
+from pps import *
 
 # P(x) = 2 + 3x + 4x^2 + 5x^3, evaluated at c = 2.
 poly: Polynomial = Polynomial([2, 3, 4, 5])
