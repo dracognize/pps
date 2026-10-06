@@ -1,12 +1,18 @@
 #include <ui/table.hpp>
 
-#include <iostream>
 #include <string>
 #include <vector>
 
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/table.hpp>
 #include <ftxui/screen/screen.hpp>
+
+#include <fmt/core.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 
 namespace ui {
 
@@ -15,7 +21,12 @@ namespace ui {
 
 		if (rows.empty())
 			return;
+		#ifdef _WIN32
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    	DWORD original_mode;
+    	GetConsoleMode(hOut, &original_mode);
+		#endif
 		auto table = Table(rows);
 
 		table.SelectRow(0).Decorate(color(Color::Cyan));
@@ -41,7 +52,10 @@ namespace ui {
 		// mode, which FTXUI enables) a bare `\n` moves down without returning
 		// the carriage, so anything printed after `Print()` would start
 		// mid-line and misalign every following row.
-		std::cout << std::endl;
+		#ifdef _WIN32
+		SetConsoleMode(hOut, original_mode);
+		#endif
+		fmt::println("");
 	}
 
 } // namespace ui
