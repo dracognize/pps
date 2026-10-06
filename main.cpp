@@ -16,19 +16,19 @@ auto main() -> int {
 	const Polynomial poly = {2, 3, 4, 5};
 	const Real		 c	  = 2;
 
-	fmt::println("Chebyshev Nodes:");
+	fmt::print("Chebyshev Nodes:\r\n");
 	display_chebyshev_nodes(-1.0, 1.0, 5);
 
-	fmt::println("\nPolynomial Evaluation");
+	fmt::print("\r\nPolynomial Evaluation\r\n");
 	display_polynomial_evaluation(c, poly);
 
-	fmt::println("\nHorner Division");
+	fmt::print("\r\nHorner Division\r\n");
 	const Polynomial b = {-c, 1}; // (x - c)
 	display_horner_division(poly, b);
 
-	fmt::println("\nk-th Derivative at x = c (generalized Horner tableau)");
+	fmt::print("\r\nk-th Derivative at x = c (generalized Horner tableau)\r\n");
 	for (SizeType k = 0; k <= 4; ++k) {
-		fmt::println("");
+		fmt::print("\r\nk = {}\r\n", k);
 		display_kth_derivative(c, poly, k);
 	}
 }

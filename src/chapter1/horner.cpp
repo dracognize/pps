@@ -22,9 +22,9 @@ namespace detail {
 	}
 
 	auto print_polynomial_evaluation(Real x, const Polynomial &poly, Real value) -> void {
-		fmt::println("P(x) = {}", poly);
-		fmt::println(
-			"P({:.{}g}) = {:.{}g}", x, config::kDisplayPrecision, value, config::kDisplayPrecision);
+		fmt::print("P(x) = {}\r\n", poly);
+		fmt::print(
+			"P({:.{}g}) = {:.{}g}\r\n", x, config::kDisplayPrecision, value, config::kDisplayPrecision);
 	}
 
 	auto divide_by_linear(const Polynomial &a, const Polynomial &b) -> PolynomialDivision {
@@ -61,10 +61,10 @@ namespace detail {
 	auto print_horner_division(const Polynomial			&a,
 							   const Polynomial			&b,
 							   const PolynomialDivision &division) -> void {
-		fmt::println("A(x) = {}", a);
-		fmt::println("B(x) = {}", b);
-		fmt::println("A(x) = B(x) * Q(x) + R");
-		fmt::println("Q(x) = {}", division.quotient);
+		fmt::print("A(x) = {}\r\n", a);
+		fmt::print("B(x) = {}\r\n", b);
+		fmt::print("A(x) = B(x) * Q(x) + R\r\n", division.quotient);
+		fmt::print("Q(x) = {}\r\n", division.quotient);
 
 		if (std::abs(division.remainder) < config::kNearZeroThreshold)
 			fmt::println("R = 0");
@@ -139,8 +139,8 @@ namespace detail {
 								 SizeType				  k,
 								 const DerivativeHistory &history,
 								 Real					  derivative) -> void {
-		fmt::println("P(x) = {}", poly);
-		fmt::println("x = {:.{}g}, k = {}", c, config::kDisplayPrecision, k);
+		fmt::print("P(x) = {}\r\n", poly);
+		fmt::print("x = {:.{}g}, k = {}\r\n", c, config::kDisplayPrecision, k);
 
 		std::vector<std::vector<std::string>> rows{};
 		rows.reserve(poly.size() + 2);
@@ -179,11 +179,11 @@ namespace detail {
 		const Real remainder_k = history.remainders[static_cast<std::size_t>(k)];
 		if (std::abs(remainder_k) < config::kNearZeroThreshold &&
 			std::abs(derivative) < config::kNearZeroThreshold) {
-			fmt::println("R = 0");
-			fmt::println("P^({})(c) = {}! * R = 0", k, k);
+			fmt::print("R = 0\r\n");
+			fmt::print("P^({})(c) = {}! * R = 0\r\n", k, k);
 		} else {
-			fmt::println("R = {:.{}g}", remainder_k, config::kDisplayPrecision);
-			fmt::println("P^({})({:.{}g}) = {}! * R = {:.{}g}",
+			fmt::print("R = {:.{}g}\r\n", remainder_k, config::kDisplayPrecision);
+			fmt::print("P^({})({:.{}g}) = {}! * R = {:.{}g}\r\n",
 						 k,
 						 c,
 						 config::kDisplayPrecision,
@@ -207,15 +207,15 @@ auto display_horner_division(const Polynomial &a, const Polynomial &b) -> void {
 
 auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void {
 	if (poly.empty()) {
-		fmt::println("P(x) = 0");
-		fmt::println("P^({})({:.{}g}) = 0", k, c, config::kDisplayPrecision);
+		fmt::print("P(x) = 0\r\n");
+		fmt::print("P^({})({:.{}g}) = 0\r\n", k, c, config::kDisplayPrecision);
 		return;
 	}
 
 	if (k > detail::effective_degree(poly)) {
-		fmt::println("P(x) = {}", poly);
-		fmt::println("x = {:.{}g}, k = {}", c, config::kDisplayPrecision, k);
-		fmt::println("k > deg(P), so P^({})(c) = 0", k);
+		fmt::print("P(x) = {}\r\n", poly);
+		fmt::print("x = {:.{}g}, k = {}\r\n", c, config::kDisplayPrecision, k);
+		fmt::print("k > deg(P), so P^({})(c) = 0\r\n", k);
 		return;
 	}
 
