@@ -60,7 +60,18 @@ namespace detail {
 								 SizeType				  k,
 								 const DerivativeHistory &history,
 								 Real					  derivative) -> void;
-
+	/// @brief 	Multiply `P(x)` by `(x - c)`.
+	/// @param a Ascending coefficients.
+	/// @param b Ascending coefficients of degree-1 polynomial (x - c).
+	/// @return Ascending coefficients of the product.
+	auto multiply_by_linear(const Polynomial &a, const Polynomial &b) -> Polynomial;
+	/// @brief Print the result of a Horner multiplication.
+	/// @param a Ascending coefficients.
+	/// @param b Ascending coefficients of degree-1 polynomial (x - c).
+	/// @param product Product of the two polynomials.
+	auto print_horner_multiplication(const Polynomial &a,
+									 const Polynomial &b,
+									 const Polynomial &product) -> void;
 } // namespace detail
 
 /// @brief Print `P(x)` and `P(x0)` as plain text.
@@ -78,3 +89,8 @@ auto display_horner_division(const Polynomial &a, const Polynomial &b) -> void;
 /// @param poly Ascending coefficients.
 /// @param k Derivative order.
 auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void;
+
+/// @brief Multiply `P(x)` by `(x - c)` and print the result. 
+/// @param a Ascending coefficients.
+/// @param b Ascending coefficients of degree-1 polynomial (x - c).
+auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> void;

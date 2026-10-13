@@ -23,8 +23,11 @@ namespace detail {
 
 	auto print_polynomial_evaluation(Real x, const Polynomial &poly, Real value) -> void {
 		fmt::print("P(x) = {}\r\n", poly);
-		fmt::print(
-			"P({:.{}g}) = {:.{}g}\r\n", x, config::kDisplayPrecision, value, config::kDisplayPrecision);
+		fmt::print("P({:.{}g}) = {:.{}g}\r\n",
+				   x,
+				   config::kDisplayPrecision,
+				   value,
+				   config::kDisplayPrecision);
 	}
 
 	auto divide_by_linear(const Polynomial &a, const Polynomial &b) -> PolynomialDivision {
@@ -124,6 +127,33 @@ namespace detail {
 		return history;
 	}
 
+	auto multiply_by_linear(const Polynomial &a, const Polynomial &b) -> Polynomial {
+		if (a.empty() || b.size() != 2 || b.back() == 0)
+			return {};
+
+		Polynomial multiplication(a.size() + 1);
+		const Real lead = b.back();
+		const Real c	= -b.front() / lead;
+
+		for (SizeType i = 0; i < a.size(); ++i) {
+			multiplication[i + 1] = a[i];
+			multiplication[i] -= a[i] * c;
+		}
+
+		if (lead != 1.0)
+			for (auto &coeff : multiplication)
+				coeff /= lead;
+		return multiplication;
+	}
+
+	auto print_horner_multiplication(const Polynomial &a,
+									 const Polynomial &b,
+									 const Polynomial &product) -> void {
+		fmt::print("A(x) = {}\r\n", a);
+		fmt::print("B(x) = {}\r\n", b);
+		fmt::print("A(x) * B(x) = {}\r\n", product);
+	}
+
 	namespace {
 
 		auto format_table_value(Real value) -> std::string {
@@ -184,12 +214,12 @@ namespace detail {
 		} else {
 			fmt::print("R = {:.{}g}\r\n", remainder_k, config::kDisplayPrecision);
 			fmt::print("P^({})({:.{}g}) = {}! * R = {:.{}g}\r\n",
-						 k,
-						 c,
-						 config::kDisplayPrecision,
-						 k,
-						 derivative,
-						 config::kDisplayPrecision);
+					   k,
+					   c,
+					   config::kDisplayPrecision,
+					   k,
+					   derivative,
+					   config::kDisplayPrecision);
 		}
 	}
 
@@ -222,4 +252,9 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 	auto history	= detail::build_derivative_history(c, poly, k);
 	auto derivative = detail::factorial(k) * history.remainders[static_cast<std::size_t>(k)];
 	detail::render_derivative_table(c, poly, k, history, derivative);
+}
+
+auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> void {
+	const auto product = detail::multiply_by_linear(a, b);
+	detail::print_horner_multiplication(a, b, product);
 }
