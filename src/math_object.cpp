@@ -9,6 +9,22 @@
 
 #include <fmt/format.h>
 
+/// @brief Polynomial member operators.
+auto Polynomial::operator+(const Polynomial &other) const -> Polynomial {
+	Polynomial result(std::max(size(), other.size()));
+	for (SizeType i = 0; i < size(); ++i)
+		result[i] += (*this)[i];
+	for (SizeType i = 0; i < other.size(); ++i)
+		result[i] += other[i];
+	return result;
+}
+auto Polynomial::operator*(const Real &scalar) const -> Polynomial {
+	Polynomial result(*this);
+	for (auto &coeff : result)
+		coeff *= scalar;
+	return result;
+}
+
 namespace {
 	auto is_zero_coeff(Real c) -> bool {
 		return std::abs(c) < config::kNearZeroThreshold;
