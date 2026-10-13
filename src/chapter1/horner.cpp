@@ -127,33 +127,6 @@ namespace detail {
 		return history;
 	}
 
-	auto multiply_by_linear(const Polynomial &a, const Polynomial &b) -> Polynomial {
-		if (a.empty() || b.size() != 2 || b.back() == 0)
-			return {};
-
-		Polynomial multiplication(a.size() + 1);
-		const Real lead = b.back();
-		const Real c	= -b.front() / lead;
-
-		for (SizeType i = 0; i < a.size(); ++i) {
-			multiplication[i + 1] = a[i];
-			multiplication[i] -= a[i] * c;
-		}
-
-		if (lead != 1.0)
-			for (auto &coeff : multiplication)
-				coeff /= lead;
-		return multiplication;
-	}
-
-	auto print_horner_multiplication(const Polynomial &a,
-									 const Polynomial &b,
-									 const Polynomial &product) -> void {
-		fmt::print("A(x) = {}\r\n", a);
-		fmt::print("B(x) = {}\r\n", b);
-		fmt::print("A(x) * B(x) = {}\r\n", product);
-	}
-
 	namespace {
 
 		auto format_table_value(Real value) -> std::string {
@@ -223,6 +196,58 @@ namespace detail {
 		}
 	}
 
+	auto multiply_by_linear(const Polynomial &a, const Polynomial &b) -> Polynomial {
+		if (a.empty() || b.size() != 2 || b.back() == 0)
+			return {};
+
+		Polynomial multiplication(a.size() + 1);
+		const Real lead = b.back();
+		const Real c	= -b.front() / lead;
+
+		for (SizeType i = 0; i < a.size(); ++i) {
+			multiplication[i + 1] = a[i];
+			multiplication[i] -= a[i] * c;
+		}
+
+		if (lead != 1.0)
+			for (auto &coeff : multiplication)
+				coeff /= lead;
+		return multiplication;
+	}
+
+	auto print_horner_multiplication(const Polynomial &a,
+									 const Polynomial &b,
+									 const Polynomial &product) -> void {
+		fmt::print("A(x) = {}\r\n", a);
+		fmt::print("B(x) = {}\r\n", b);
+		fmt::print("A(x) * B(x) = {}\r\n", product);
+	}
+
+	auto node_polynomial(const RealList &nodes) -> Polynomial {
+		if (nodes.empty())
+			return {1.0};
+
+		Polynomial result{1.0};
+		for (const Real c : nodes) {
+			const Polynomial divisor{-c, 1.0};
+			result = multiply_by_linear(result, divisor);
+		}
+		return result;
+	}
+
+	auto build_node_polynomial_history(const RealList &nodes) -> NodePolynomialHistory {
+		NodePolynomialHistory history{};
+		history.products.reserve(nodes.size() + 1);
+
+		history.products.push_back({1.0});
+
+		for (const Real c : nodes) {
+			const Polynomial multiplier{-c, 1.0};
+			auto			 current = multiply_by_linear(history.products.back(), multiplier);
+			history.products.push_back(current);
+		}
+		return history;
+	}
 } // namespace detail
 
 auto display_polynomial_evaluation(Real x, const Polynomial &poly) -> void {

@@ -72,6 +72,14 @@ namespace detail {
 	auto print_horner_multiplication(const Polynomial &a,
 									 const Polynomial &b,
 									 const Polynomial &product) -> void;
+	/// @brief Build the polynomial with roots at the given nodes.
+	/// @param nodes List of roots.
+	/// @return Polynomial with the specified roots.
+	auto node_polynomial(const RealList &nodes) -> Polynomial;
+	/// @brief Build the history of node polynomials.
+	/// @param nodes List of roots.
+	/// @return History of node polynomials.
+	auto build_node_polynomial_history(const RealList &nodes) -> NodePolynomialHistory;
 } // namespace detail
 
 /// @brief Print `P(x)` and `P(x0)` as plain text.

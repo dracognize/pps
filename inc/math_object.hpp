@@ -39,6 +39,10 @@ struct DerivativeHistory {
 		std::vector<Real>		remainders; ///< Evaluations `Q_j(c)`.
 };
 
+struct NodePolynomialHistory{
+	std::vector<Polynomial> products;	///< Successive node polynomials `w_0..w_(n+1)`.
+};
+
 /// @cond INTERNAL
 template <typename Char>
 struct fmt::range_format_kind<Polynomial, Char>
