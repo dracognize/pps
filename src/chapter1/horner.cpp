@@ -121,7 +121,7 @@ namespace detail {
 		for (SizeType j = 1; j <= k; ++j) {
 			auto division = divide_by_linear(history.quotients.back(), divisor);
 			history.quotients.push_back(division.quotient);
-			history.remainders.push_back(evaluate_polynomial(c, division.quotient));
+			history.remainders.push_back(division.remainder);
 		}
 
 		return history;
@@ -140,8 +140,7 @@ namespace detail {
 	auto render_derivative_table(Real					  c,
 								 const Polynomial		 &poly,
 								 SizeType				  k,
-								 const DerivativeHistory &history,
-								 Real					  derivative) -> void {
+								 const DerivativeHistory &history) -> void {
 		fmt::print("P(x) = {}\r\n", poly);
 		fmt::print("x = {:.{}g}, k = {}\r\n", c, config::kDisplayPrecision, k);
 
@@ -169,31 +168,16 @@ namespace detail {
 			rows.push_back(row);
 		}
 
-		std::vector<std::string> result_row{};
-		result_row.reserve(static_cast<std::size_t>(k) + 2);
-		result_row.emplace_back("Result");
-		for (SizeType j = 0; j <= k; ++j)
-			result_row.push_back(
+		std::vector<std::string> remainder_row{};
+		remainder_row.reserve(static_cast<std::size_t>(k) + 2);
+		remainder_row.emplace_back("Remainder");
+		remainder_row.push_back(" ");
+		for (SizeType j = 1; j <= k; ++j)
+			remainder_row.push_back(
 				format_table_value(history.remainders[static_cast<std::size_t>(j)]));
-		rows.push_back(result_row);
+		rows.push_back(remainder_row);
 
 		ui::render_table(rows, config::kTableMinWidth);
-
-		const Real remainder_k = history.remainders[static_cast<std::size_t>(k)];
-		if (std::abs(remainder_k) < config::kNearZeroThreshold &&
-			std::abs(derivative) < config::kNearZeroThreshold) {
-			fmt::print("R = 0\r\n");
-			fmt::print("P^({})(c) = {}! * R = 0\r\n", k, k);
-		} else {
-			fmt::print("R = {:.{}g}\r\n", remainder_k, config::kDisplayPrecision);
-			fmt::print("P^({})({:.{}g}) = {}! * R = {:.{}g}\r\n",
-					   k,
-					   c,
-					   config::kDisplayPrecision,
-					   k,
-					   derivative,
-					   config::kDisplayPrecision);
-		}
 	}
 
 	auto multiply_by_linear(const Polynomial &a, const Polynomial &b) -> Polynomial {
@@ -267,16 +251,37 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 		return;
 	}
 
-	if (k > detail::effective_degree(poly)) {
-		fmt::print("P(x) = {}\r\n", poly);
-		fmt::print("x = {:.{}g}, k = {}\r\n", c, config::kDisplayPrecision, k);
-		fmt::print("k > deg(P), so P^({})(c) = 0\r\n", k);
+	auto n		 = detail::effective_degree(poly);
+	auto history = detail::build_derivative_history(c, poly, k);
+	detail::render_derivative_table(c, poly, std::min(n, k), history);
+
+	for (SizeType i = 0; i <= std::min(n, k); i++) {
+		auto value_i	= detail::evaluate_polynomial(c, history.quotients[i]);
+		auto derivative = detail::factorial(i) * value_i;
+
+		if (std::abs(value_i) < config::kNearZeroThreshold &&
+			std::abs(derivative) < config::kNearZeroThreshold) {
+			fmt::print("R = 0\r\n");
+			fmt::print("P^({})(c) = {}! * R = 0\r\n", i, i);
+		} else {
+			fmt::print("k = {}\r\n", i);
+			fmt::print("Q_{}({}) = {:.{}g}\r\n", i, c, value_i, config::kDisplayPrecision);
+			fmt::print("P^({})({:.{}g}) = {}! * Q_{}({}) = {:.{}g}\r\n\n",
+					   i,
+					   c,
+					   config::kDisplayPrecision,
+					   i,
+					   i,
+					   c,
+					   derivative,
+					   config::kDisplayPrecision);
+		}
+	}
+	if (k > n) {
+		fmt::print("k >= {}\r\n", n + 1);
+		fmt::print("k > deg(P), so P^(k)({}) = 0\r\n", c);
 		return;
 	}
-
-	auto history	= detail::build_derivative_history(c, poly, k);
-	auto derivative = detail::factorial(k) * history.remainders[static_cast<std::size_t>(k)];
-	detail::render_derivative_table(c, poly, k, history, derivative);
 }
 
 auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> void {
