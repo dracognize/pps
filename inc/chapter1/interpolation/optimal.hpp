@@ -1,5 +1,5 @@
 #pragma once
-/// @file interpolation.hpp
+/// @file optimal.hpp
 /// @brief Chebyshev interpolation nodes.
 
 #include <math_object.hpp>
