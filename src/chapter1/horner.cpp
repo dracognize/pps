@@ -145,37 +145,31 @@ namespace detail {
 		fmt::print("x = {:.{}g}, k = {}\r\n", c, config::kDisplayPrecision, k);
 
 		std::vector<std::vector<std::string>> rows{};
-		rows.reserve(poly.size() + 2);
+		rows.reserve(static_cast<size_t>(k) + 2);
 
 		std::vector<std::string> header{};
-		header.reserve(static_cast<std::size_t>(k) + 2);
+		header.reserve(poly.size() + 2);
 		header.emplace_back("Coefficient");
-		for (SizeType j = 0; j <= k; ++j)
-			header.push_back(fmt::format("k = {}", j));
+		for (SizeType j = poly.size(); j > 0; --j)
+			header.push_back(fmt::format("a{}", j - 1));
+		header.emplace_back("Remainder");
 		rows.push_back(header);
 
-		for (SizeType i = 0; i < poly.size(); ++i) {
+		for (SizeType i = 0; i <= k; ++i) {
 			std::vector<std::string> row{};
-			row.reserve(static_cast<std::size_t>(k) + 2);
-			row.push_back(fmt::format("a{}", i));
-			for (SizeType j = 0; j <= k; ++j) {
-				const Polynomial &quotient = history.quotients[static_cast<std::size_t>(j)];
-				if (i < quotient.size())
-					row.push_back(format_table_value(quotient[i]));
-				else
-					row.emplace_back("");
+			row.reserve(poly.size() + 2);
+			row.push_back(fmt::format("k = {}", i));
+			for (SizeType j = 0; j < i; j++) {
+				row.emplace_back("");
 			}
+			const Polynomial &quotient = history.quotients[static_cast<size_t>(i)];
+			for (auto it = quotient.rbegin(); it != quotient.rend(); ++it) {
+				row.push_back(format_table_value(*it));
+			}
+			row.push_back(format_table_value(history.remainders[static_cast<size_t>(i)]));
 			rows.push_back(row);
 		}
-
-		std::vector<std::string> remainder_row{};
-		remainder_row.reserve(static_cast<std::size_t>(k) + 2);
-		remainder_row.emplace_back("Remainder");
-		remainder_row.push_back(" ");
-		for (SizeType j = 1; j <= k; ++j)
-			remainder_row.push_back(
-				format_table_value(history.remainders[static_cast<std::size_t>(j)]));
-		rows.push_back(remainder_row);
+		rows[1][poly.size() + 1] = "";
 
 		ui::render_table(rows, config::kTableMinWidth);
 	}
@@ -259,20 +253,28 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 		auto value_i	= detail::evaluate_polynomial(c, history.quotients[i]);
 		auto derivative = detail::factorial(i) * value_i;
 
+		fmt::print("k = {}\r\n", i);
 		if (std::abs(value_i) < config::kNearZeroThreshold &&
 			std::abs(derivative) < config::kNearZeroThreshold) {
-			fmt::print("R = 0\r\n");
-			fmt::print("P^({})(c) = {}! * R = 0\r\n", i, i);
-		} else {
-			fmt::print("k = {}\r\n", i);
-			fmt::print("Q_{}({}) = {:.{}g}\r\n", i, c, value_i, config::kDisplayPrecision);
-			fmt::print("P^({})({:.{}g}) = {}! * Q_{}({}) = {:.{}g}\r\n\n",
+			fmt::print("P_{}({}) = 0\r\n", n - i, c, config::kDisplayPrecision);
+			fmt::print("P^({})({}) = {}! * P_{}({}) = 0\r\n",
 					   i,
 					   c,
 					   config::kDisplayPrecision,
 					   i,
+					   n - i,
+					   c,
+					   config::kDisplayPrecision);
+		} else {
+			fmt::print("P_{}({}) = {:.{}g}\r\n", n - i, c, value_i, config::kDisplayPrecision);
+			fmt::print("P^({})({:.{}g}) = {}! * P_{}({}) = {:.{}g}\r\n\n",
 					   i,
 					   c,
+					   config::kDisplayPrecision,
+					   i,
+					   n - i,
+					   c,
+					   config::kDisplayPrecision,
 					   derivative,
 					   config::kDisplayPrecision);
 		}
