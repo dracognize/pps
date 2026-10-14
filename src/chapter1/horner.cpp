@@ -226,6 +226,52 @@ namespace detail {
 		}
 		return history;
 	}
+
+	auto render_nodes_polynomial_table(const RealList &nodes, const NodePolynomialHistory &history)
+		-> void {
+		SizeType k = history.products.back().size() - 1;
+		SizeType n = nodes.size();
+
+		std::vector<std::vector<std::string>> rows{};
+		rows.reserve(n + 2);
+
+		std::vector<std::string> header{};
+		header.reserve(k + 3);
+
+		header.emplace_back("");
+		header.emplace_back("");
+		for (SizeType j = 0; j <= k; ++j) {
+			header.push_back(fmt::format("a{}", k - j));
+		}
+		rows.push_back(header);
+
+		std::vector<std::string> row{};
+		row.reserve(k + 3);
+
+		row.emplace_back("i");
+		row.emplace_back("x_i");
+		for (SizeType j = 0; j < k; ++j) {
+			row.push_back("");
+		}
+		row.push_back(format_table_value(history.products[0][0]));
+		rows.push_back(row);
+
+		for (SizeType i = 0; i < n; ++i) {
+			row.clear();
+			row.push_back(fmt::format("{}", i));
+			row.push_back(format_table_value(nodes[i]));
+			for (SizeType j = 0; j < k - i - 1; ++j) {
+				row.push_back("");
+			}
+			const Polynomial &product = history.products[i + 1];
+			for (auto it = product.rbegin(); it != product.rend(); ++it) {
+				row.push_back(format_table_value(*it));
+			}
+			rows.push_back(row);
+		}
+
+		ui::render_table(rows, config::kTableMinWidth);
+	}
 } // namespace detail
 
 auto display_polynomial_evaluation(Real x, const Polynomial &poly) -> void {
@@ -256,8 +302,8 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 		fmt::print("k = {}\r\n", i);
 		if (std::abs(value_i) < config::kNearZeroThreshold &&
 			std::abs(derivative) < config::kNearZeroThreshold) {
-			fmt::print("P_{}({}) = 0\r\n", n - i, c, config::kDisplayPrecision);
-			fmt::print("P^({})({}) = {}! * P_{}({}) = 0\r\n",
+			fmt::print("P_{}({:.{}g}) = 0\r\n", n - i, c, config::kDisplayPrecision);
+			fmt::print("P^({})({:.{}g}) = {}! * P_{}({:.{}g}) = 0\r\n",
 					   i,
 					   c,
 					   config::kDisplayPrecision,
@@ -266,8 +312,13 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 					   c,
 					   config::kDisplayPrecision);
 		} else {
-			fmt::print("P_{}({}) = {:.{}g}\r\n", n - i, c, value_i, config::kDisplayPrecision);
-			fmt::print("P^({})({:.{}g}) = {}! * P_{}({}) = {:.{}g}\r\n\n",
+			fmt::print("P_{}({:.{}g}) = {:.{}g}\r\n",
+					   n - i,
+					   c,
+					   config::kDisplayPrecision,
+					   value_i,
+					   config::kDisplayPrecision);
+			fmt::print("P^({})({:.{}g}) = {}! * P_{}({:.{}g}) = {:.{}g}\r\n\n",
 					   i,
 					   c,
 					   config::kDisplayPrecision,
@@ -289,4 +340,22 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> void {
 	const auto product = detail::multiply_by_linear(a, b);
 	detail::print_horner_multiplication(a, b, product);
+}
+
+auto display_nodes_polynomial_table(const RealList &nodes) -> void {
+	if (nodes.empty()) {
+		fmt::print("No nodes provided.\r\n");
+		return;
+	}
+
+	fmt::print("Nodes:  ");
+	for (const auto &node : nodes) {
+		fmt::print("{:.{}g}  ", node, config::kDisplayPrecision);
+	}
+	fmt::print("\r\n\r\n");
+	fmt::print("Node polynomials' coefficients\r\n");
+	const auto history = detail::build_node_polynomial_history(nodes);
+	detail::render_nodes_polynomial_table(nodes, history);
+
+	fmt::print("Node Polynomial: w_{}(x) = {}\r\n", nodes.size(), history.products.back());
 }

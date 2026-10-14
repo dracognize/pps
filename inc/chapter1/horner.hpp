@@ -54,12 +54,10 @@ namespace detail {
 	/// @param poly Ascending coefficients.
 	/// @param k Derivative order.
 	/// @param history Precomputed tableau.
-	/// @param derivative Precomputed `P^{(k)}(c)`.
 	auto render_derivative_table(Real					  c,
 								 const Polynomial		 &poly,
 								 SizeType				  k,
-								 const DerivativeHistory &history,
-								 Real					  derivative) -> void;
+								 const DerivativeHistory &history) -> void;
 	/// @brief 	Multiply `P(x)` by `(x - c)`.
 	/// @param a Ascending coefficients.
 	/// @param b Ascending coefficients of degree-1 polynomial (x - c).
@@ -80,6 +78,11 @@ namespace detail {
 	/// @param nodes List of roots.
 	/// @return History of node polynomials.
 	auto build_node_polynomial_history(const RealList &nodes) -> NodePolynomialHistory;
+	/// @brief Render the `i | x_i | w_i(x)` table.
+	/// @param nodes List of roots.
+	/// @param history Precomputed node polynomial history.
+	auto render_nodes_polynomial_table(const RealList &nodes, const NodePolynomialHistory &history)
+		-> void;
 } // namespace detail
 
 /// @brief Print `P(x)` and `P(x0)` as plain text.
@@ -98,7 +101,10 @@ auto display_horner_division(const Polynomial &a, const Polynomial &b) -> void;
 /// @param k Derivative order.
 auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void;
 
-/// @brief Multiply `P(x)` by `(x - c)` and print the result. 
+/// @brief Multiply `P(x)` by `(x - c)` and print the result.
 /// @param a Ascending coefficients.
 /// @param b Ascending coefficients of degree-1 polynomial (x - c).
 auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> void;
+/// @brief Render the table of node polynomials.
+/// @param nodes List of roots.
+auto display_nodes_polynomial_table(const RealList &nodes) -> void;
