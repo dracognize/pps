@@ -1,5 +1,5 @@
-#include <chapter1/horner.hpp>
-#include <chapter1/interpolation.hpp>
+#include <chapter1/interpolation/optimal.hpp>
+#include <chapter1/interpolation/horner.hpp>
 #include <math_object.hpp>
 
 // Python bindings: thin adapters over the C++ API.

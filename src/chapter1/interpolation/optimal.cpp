@@ -1,4 +1,4 @@
-#include <chapter1/interpolation.hpp>
+#include <chapter1/interpolation/optimal.hpp>
 #include <config.hpp>
 #include <math_object.hpp>
 #include <ui/table.hpp>

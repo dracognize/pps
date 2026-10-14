@@ -1,4 +1,4 @@
-#include <chapter1/horner.hpp>
+#include <chapter1/interpolation/horner.hpp>
 #include <config.hpp>
 #include <math_object.hpp>
 #include <ui/table.hpp>

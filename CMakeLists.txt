@@ -46,8 +46,8 @@ add_library(
 	STATIC
 	src/math_object.cpp
 	src/ui/table.cpp
-	src/chapter1/interpolation.cpp
-	src/chapter1/horner.cpp
+	src/chapter1/interpolation/optimal.cpp
+	src/chapter1/interpolation/horner.cpp
 )
 
 target_include_directories(
