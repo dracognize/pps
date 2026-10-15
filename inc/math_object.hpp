@@ -21,8 +21,9 @@ using RealList = std::vector<Real>;
 struct Polynomial : std::vector<Real> {
 		using std::vector<Real>::vector;
 
-		auto operator+(const Polynomial &other) const -> Polynomial;
-		auto operator*(const Real &scalar) const -> Polynomial;
+		auto		operator+(const Polynomial &other) const -> Polynomial;
+		auto		operator*(const Real &scalar) const -> Polynomial;
+		friend auto operator*(const Real &scalar, const Polynomial &poly) -> Polynomial;
 };
 
 /// @brief Result of dividing by a degree-1 divisor.
@@ -39,8 +40,23 @@ struct DerivativeHistory {
 		std::vector<Real>		remainders; ///< Evaluations `Q_j(c)`.
 };
 
-struct NodePolynomialHistory{
-	std::vector<Polynomial> products;	///< Successive node polynomials `w_0..w_(n+1)`.
+/// @brief Successive node polynomials for nodes `x_0..x_{n-1}`.
+/// @details `products[0]` is `1` (`w_0`), `products[i+1]` is
+/// `products[i] * (x - x_i)`. The last entry `products[n]` is the full
+/// node polynomial `w(x)`.
+struct NodePolynomialHistory {
+		std::vector<Polynomial> products; ///< Partial products `w_0..w_n` (`n + 1` entries).
+};
+
+/// @brief Inputs and intermediates for Lagrange interpolation.
+/// @details For nodes `x_i` with values `y_i`: `basis[i]` is `w(x) / (x - x_i)`
+/// and `normalizers[i]` is `prod_{j != i} (x_i - x_j)`, so
+/// `P(x) = sum_i values[i] / normalizers[i] * basis[i]`.
+struct LagrangeInterpolationHistory {
+		NodePolynomialHistory	node_polys;	 ///< Node polynomial history `w_0..w_n`.
+		std::vector<Polynomial> basis;		 ///< Reduced polynomials `w(x) / (x - x_i)`.
+		RealList				normalizers; ///< Barycentric denominators `prod_{j != i} (x_i - x_j)`.
+		RealList				values;		 ///< Function values `y_i` at the nodes.
 };
 
 /// @cond INTERNAL

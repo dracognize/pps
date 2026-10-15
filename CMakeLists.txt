@@ -48,6 +48,7 @@ add_library(
 	src/ui/table.cpp
 	src/chapter1/interpolation/optimal.cpp
 	src/chapter1/interpolation/horner.cpp
+	src/chapter1/interpolation/polynomial/Lagrange.cpp
 )
 
 target_include_directories(

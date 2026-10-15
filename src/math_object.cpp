@@ -24,6 +24,9 @@ auto Polynomial::operator*(const Real &scalar) const -> Polynomial {
 		coeff *= scalar;
 	return result;
 }
+auto operator*(const Real &scalar, const Polynomial &poly) -> Polynomial {
+    return poly * scalar;
+}
 
 namespace {
 	auto is_zero_coeff(Real c) -> bool {
