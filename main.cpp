@@ -1,5 +1,6 @@
-#include <chapter1/horner.hpp>
-#include <chapter1/interpolation.hpp>
+#include <chapter1/interpolation/horner.hpp>
+#include <chapter1/interpolation/optimal.hpp>
+#include <chapter1/interpolation/polynomial/Lagrange.hpp>
 #include <math_object.hpp>
 
 #include <fmt/base.h>
