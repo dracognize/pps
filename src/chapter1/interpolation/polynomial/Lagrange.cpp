@@ -34,7 +34,7 @@ namespace detail {
 			}
 
 			const auto division =
-				detail::divide_by_linear(history.node_polys.products.back(), {-nodes[i], 1});
+				detail::divide_by_linear(history.node_polys.back(), {-nodes[i], 1});
 			history.basis.push_back(division.quotient);
 		}
 
@@ -128,9 +128,9 @@ namespace detail {
 
 namespace {
 	auto Lagrange_polynomial(const LagrangeInterpolationHistory &history) -> Polynomial {
-		const std::vector<Polynomial> &basis	   = history.basis;
-		const RealList				  &normalizers = history.normalizers;
-		const RealList				  &values	   = history.values;
+		const PolynomialList &basis		  = history.basis;
+		const RealList		 &normalizers = history.normalizers;
+		const RealList		 &values	  = history.values;
 
 		Polynomial result(basis.back().size(), 0.0);
 		for (SizeType i = 0; i < basis.size(); ++i) {

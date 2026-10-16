@@ -14,6 +14,8 @@ using SizeType = std::size_t;
 
 /// @brief List of reals (nodes, samples).
 using RealList = std::vector<Real>;
+/// @brief 2D table of reals (list of rows).
+using RealTable = std::vector<RealList>;
 
 /// @brief Polynomial in ascending coefficient order.
 /// @details `poly[i]` is the coefficient of `x^i`. Empty means zero.
@@ -37,26 +39,31 @@ struct PolynomialDivision {
 /// `(x - c)`. `remainders[j]` is `Q_j(c)`, i.e. `P^{(j)}(c) / j!`.
 struct DerivativeHistory {
 		std::vector<Polynomial> quotients;	///< Successive quotients `Q_0..Q_k`.
-		std::vector<Real>		remainders; ///< Evaluations `Q_j(c)`.
+		RealList				remainders; ///< Evaluations `Q_j(c)`.
 };
 
-/// @brief Successive node polynomials for nodes `x_0..x_{n-1}`.
-/// @details `products[0]` is `1` (`w_0`), `products[i+1]` is
-/// `products[i] * (x - x_i)`. The last entry `products[n]` is the full
-/// node polynomial `w(x)`.
-struct NodePolynomialHistory {
-		std::vector<Polynomial> products; ///< Partial products `w_0..w_n` (`n + 1` entries).
-};
+/// @brief List of polynomials (e.g. node-polynomial history `w_0..w_n`).
+using PolynomialList = std::vector<Polynomial>;
 
 /// @brief Inputs and intermediates for Lagrange interpolation.
 /// @details For nodes `x_i` with values `y_i`: `basis[i]` is `w(x) / (x - x_i)`
 /// and `normalizers[i]` is `prod_{j != i} (x_i - x_j)`, so
 /// `P(x) = sum_i values[i] / normalizers[i] * basis[i]`.
 struct LagrangeInterpolationHistory {
-		NodePolynomialHistory	node_polys;	 ///< Node polynomial history `w_0..w_n`.
+		PolynomialList			node_polys;	 ///< Node polynomial history `w_0..w_n`.
 		std::vector<Polynomial> basis;		 ///< Reduced polynomials `w(x) / (x - x_i)`.
-		RealList				normalizers; ///< Barycentric denominators `prod_{j != i} (x_i - x_j)`.
+		RealList				normalizers; ///< Barycentric denominators.
 		RealList				values;		 ///< Function values `y_i` at the nodes.
+};
+
+/// @brief Inputs and intermediates for Newton forward interpolation.
+/// @details For nodes `x_i` with values `y_i`: `divided_diffs[j][i]` is the
+/// `i`-th order divided difference starting at node `j` (so
+/// `divided_diffs[j][0] = y_j`), and `node_polys[k]` is
+/// `w_k(x) = prod(x - x_j)` with `w_0 = 1`
+struct NewtonInterpolationHistory {
+		RealTable	   divided_diffs; ///< Divided-difference table `divided_diffs[j][i]`.
+		PolynomialList node_polys;	  ///< Node polynomial history `w_0..w_n`.
 };
 
 /// @cond INTERNAL

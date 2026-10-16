@@ -199,23 +199,23 @@ namespace detail {
 		return result;
 	}
 
-	auto build_node_polynomial_history(const RealList &nodes) -> NodePolynomialHistory {
-		NodePolynomialHistory history{};
-		history.products.reserve(nodes.size() + 1);
+	auto build_node_polynomial_history(const RealList &nodes) -> PolynomialList {
+		PolynomialList history{};
+		history.reserve(nodes.size() + 1);
 
-		history.products.push_back({1.0});
+		history.push_back({1.0});
 
 		for (const Real c : nodes) {
 			const Polynomial multiplier{-c, 1.0};
-			auto			 current = multiply_by_linear(history.products.back(), multiplier);
-			history.products.push_back(current);
+			auto			 current = multiply_by_linear(history.back(), multiplier);
+			history.push_back(current);
 		}
 		return history;
 	}
 
-	auto render_nodes_polynomial_table(const RealList &nodes, const NodePolynomialHistory &history)
+	auto render_nodes_polynomial_table(const RealList &nodes, const PolynomialList &history)
 		-> void {
-		SizeType k = history.products.back().size() - 1;
+		SizeType k = history.back().size() - 1;
 		SizeType n = nodes.size();
 
 		std::vector<std::vector<std::string>> rows{};
@@ -239,7 +239,7 @@ namespace detail {
 		for (SizeType j = 0; j < k; ++j) {
 			row.push_back("");
 		}
-		row.push_back(format_table_value(history.products[0][0]));
+		row.push_back(format_table_value(history[0][0]));
 		rows.push_back(row);
 
 		for (SizeType i = 0; i < n; ++i) {
@@ -249,7 +249,7 @@ namespace detail {
 			for (SizeType j = 0; j < k - i - 1; ++j) {
 				row.push_back("");
 			}
-			const Polynomial &product = history.products[i + 1];
+			const Polynomial &product = history[i + 1];
 			for (auto it = product.rbegin(); it != product.rend(); ++it) {
 				row.push_back(format_table_value(*it));
 			}
@@ -343,5 +343,5 @@ auto display_nodes_polynomial_table(const RealList &nodes) -> void {
 	const auto history = detail::build_node_polynomial_history(nodes);
 	detail::render_nodes_polynomial_table(nodes, history);
 
-	fmt::print("Node Polynomial: w_{}(x) = {}\r\n", nodes.size(), history.products.back());
+	fmt::print("Node Polynomial: w_{}(x) = {}\r\n", nodes.size(), history.back());
 }

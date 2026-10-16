@@ -68,11 +68,11 @@ namespace detail {
 	/// @brief Build the history of node polynomials.
 	/// @param nodes List of roots.
 	/// @return History of node polynomials.
-	auto build_node_polynomial_history(const RealList &nodes) -> NodePolynomialHistory;
+	auto build_node_polynomial_history(const RealList &nodes) -> PolynomialList;
 	/// @brief Render the `i | x_i | w_i(x)` table.
 	/// @param nodes List of roots.
 	/// @param history Precomputed node polynomial history.
-	auto render_nodes_polynomial_table(const RealList &nodes, const NodePolynomialHistory &history)
+	auto render_nodes_polynomial_table(const RealList &nodes, const PolynomialList &history)
 		-> void;
 } // namespace detail
 
