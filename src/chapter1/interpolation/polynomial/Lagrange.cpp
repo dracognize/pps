@@ -41,19 +41,6 @@ namespace detail {
 		return history;
 	}
 
-	auto Lagrange_polynomial(const LagrangeInterpolationHistory &history) -> Polynomial {
-		const std::vector<Polynomial> &basis	   = history.basis;
-		const RealList				  &normalizers = history.normalizers;
-		const RealList				  &values	   = history.values;
-
-		Polynomial result(basis.back().size(), 0.0);
-		for (SizeType i = 0; i < basis.size(); ++i) {
-			result = result + values[i] / normalizers[i] * basis[i];
-		}
-
-		return result;
-	}
-
 	auto Lagrange_polynomial(const RealList &nodes, const RealList &values) -> Polynomial {
 		if (nodes.empty() || nodes.size() != values.size())
 			return {};
@@ -139,11 +126,26 @@ namespace detail {
 	}
 } // namespace detail
 
+namespace {
+	auto Lagrange_polynomial(const LagrangeInterpolationHistory &history) -> Polynomial {
+		const std::vector<Polynomial> &basis	   = history.basis;
+		const RealList				  &normalizers = history.normalizers;
+		const RealList				  &values	   = history.values;
+
+		Polynomial result(basis.back().size(), 0.0);
+		for (SizeType i = 0; i < basis.size(); ++i) {
+			result = result + values[i] / normalizers[i] * basis[i];
+		}
+
+		return result;
+	}
+} // namespace
+
 auto display_Lagrange_interpolation(const RealList &nodes, const RealList &values) -> void {
 	const auto history = detail::build_Lagrange_interpolation_history(nodes, values);
 	detail::render_Lagrange_interpolation(nodes, history);
 
-	const auto poly = detail::Lagrange_polynomial(history);
-	fmt::print("\r\nLagrange interpolated polynomials: L(x) = sum[i=0,n]:y_i / D_i * C_i(x)");
+	const auto poly = Lagrange_polynomial(history);
+	fmt::print("\r\nLagrange interpolated polynomials: L(x) = sum[i=0,n]: y_i / D_i * C_i(x)");
 	fmt::print("\r\n                                        = {}\r\n", poly);
 }

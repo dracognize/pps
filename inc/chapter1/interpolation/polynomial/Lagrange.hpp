@@ -11,10 +11,6 @@ namespace detail {
 	/// @return Node polynomials, basis polynomials, normalizers, and values.
 	auto build_Lagrange_interpolation_history(const RealList &nodes, const RealList &values)
 		-> LagrangeInterpolationHistory;
-	/// @brief 	Compute the Lagrange interpolation polynomial from a precomputed history.
-	/// @param history Lagrange interpolation history.
-	/// @return The Lagrange interpolation polynomial.
-	auto Lagrange_polynomial(const LagrangeInterpolationHistory &history) -> Polynomial;
 	/// @brief 	Compute the Lagrange interpolation polynomial from nodes and values.
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
