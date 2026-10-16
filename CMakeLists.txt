@@ -51,6 +51,7 @@ add_library(
 	src/chapter1/interpolation/horner.cpp
 	src/chapter1/interpolation/polynomial/Lagrange.cpp
 	src/chapter1/interpolation/polynomial/Newton.cpp
+	src/chapter1/interpolation/polynomial/Gauss.cpp
 )
 
 target_include_directories(

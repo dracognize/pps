@@ -351,7 +351,7 @@ namespace detail {
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
 		fmt::print(
-			"\r\nNode polynomials' coefficients w_(i+1)(t) = prod[k=0,i](t - i) (w0(t) = 1)\r\n");
+			"\r\nNode polynomials' coefficients w_(i+1)(t) = prod[k=0,i](t - k) (w0(t) = 1)\r\n");
 		RealList sub_nodes(nodes.begin(), nodes.end() - 1);
 		detail::render_nodes_polynomial_table(sub_nodes, history.node_polys, "t");
 	}
@@ -474,7 +474,7 @@ namespace detail {
 		}
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
-		fmt::print("\r\nNode polynomials' coefficients w_(i+1)(t) = prod[k=0,i](t + i) (w0(t) "
+		fmt::print("\r\nNode polynomials' coefficients w_(i+1)(t) = prod[k=0,i](t + k) (w0(t) "
 				   "= 1)\r\n");
 		RealList t_nodes{};
 		for (SizeType i = 0; i < n; ++i) {
@@ -589,7 +589,7 @@ auto display_Newton_equidistant_forward(const RealList &nodes, const RealList &v
 	fmt::print("\r\n                                      = {}\r\n", poly);
 	fmt::print("Interpolation parameter: t = (x - x0) / h\r\n");
 	fmt::print("x0 = {}\r\n", nodes[0]);
-	fmt::print("h  = {}\r\n", h);
+	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);
 }
 
 auto display_Newton_equidistant_backward(const RealList &nodes, const RealList &values) -> void {
