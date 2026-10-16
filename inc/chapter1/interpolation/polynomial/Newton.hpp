@@ -6,7 +6,7 @@
 
 namespace detail {
 
-	/// @brief Build the forward divided-difference table for general nodes.
+	/// @brief Build the forward history for general nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation history; empty when invalid.
@@ -20,13 +20,13 @@ namespace detail {
 	auto Newton_general_forward_polynomial(const RealList &nodes, const RealList &values)
 		-> Polynomial;
 
-	/// @brief Render the forward divided-difference and coefficient tables.
+	/// @brief Render the forward history for general nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param history Precomputed forward history.
 	auto render_Newton_general_forward(const RealList					&nodes,
 									   const NewtonInterpolationHistory &history) -> void;
 
-	/// @brief Build the backward divided-difference table for general nodes.
+	/// @brief Build the backward history for general nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation history; empty when invalid.
@@ -40,13 +40,13 @@ namespace detail {
 	auto Newton_general_backward_polynomial(const RealList &nodes, const RealList &values)
 		-> Polynomial;
 
-	/// @brief Render the backward divided-difference and coefficient tables.
+	/// @brief Render the backward history for general nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param history Precomputed backward history.
 	auto render_Newton_general_backward(const RealList					 &nodes,
 										const NewtonInterpolationHistory &history) -> void;
 
-	/// @brief Build the forward finite-difference table for equidistant nodes.
+	/// @brief Build the forward history for equidistant nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation history; empty when invalid.
@@ -60,13 +60,13 @@ namespace detail {
 	auto Newton_equidistant_forward_polynomial(const RealList &nodes, const RealList &values)
 		-> Polynomial;
 
-	/// @brief Render the forward finite-difference and coefficient tables.
+	/// @brief Render the forward history for equidistant nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param history Precomputed forward history.
 	auto render_Newton_equidistant_forward(const RealList &nodes, const EquidistantHistory &history)
 		-> void;
 
-	/// @brief Build the backward finite-difference table for equidistant nodes.
+	/// @brief Build the backward history for equidistant nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation history; empty when invalid.
@@ -80,7 +80,7 @@ namespace detail {
 	auto Newton_equidistant_backward_polynomial(const RealList &nodes, const RealList &values)
 		-> Polynomial;
 
-	/// @brief Render the backward finite-difference and coefficient tables.
+	/// @brief Render the backward history for equidistant nodes.
 	/// @param nodes Interpolation nodes.
 	/// @param history Precomputed backward history.
 	auto render_Newton_equidistant_backward(const RealList			 &nodes,
