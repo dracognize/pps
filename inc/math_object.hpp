@@ -66,6 +66,16 @@ struct NewtonInterpolationHistory {
 		PolynomialList node_polys;	  ///< Node polynomial history `w_0..w_n`.
 };
 
+/// @brief Inputs and intermediates for Newton forward interpolation with equidistant nodes.
+/// @details For nodes `x_i` with values `y_i`: `finite_diffs[j][i]` is the
+/// `i`-th order finite difference starting at node `j` (so
+/// `finite_diffs[j][0] = y_j`), and `node_polys[k]` is
+/// `w_k(t) = prod(t + i)` with `w_0 = 1` and `t = (x - x_0) / h`.
+struct EquidistantHistory {
+		RealTable	   finite_diffs;
+		PolynomialList node_polys;
+};
+
 /// @cond INTERNAL
 template <typename Char>
 struct fmt::range_format_kind<Polynomial, Char>
