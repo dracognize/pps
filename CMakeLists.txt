@@ -45,10 +45,12 @@ add_library(
 	pps_lib
 	STATIC
 	src/math_object.cpp
+	src/math_utils.cpp
 	src/ui/table.cpp
 	src/chapter1/interpolation/optimal.cpp
 	src/chapter1/interpolation/horner.cpp
 	src/chapter1/interpolation/polynomial/Lagrange.cpp
+	src/chapter1/interpolation/polynomial/Newton.cpp
 )
 
 target_include_directories(

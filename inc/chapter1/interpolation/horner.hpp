@@ -28,15 +28,6 @@ namespace detail {
 	auto print_horner_division(const Polynomial			&a,
 							   const Polynomial			&b,
 							   const PolynomialDivision &division) -> void;
-
-	/// @brief Factorial as `Real`.
-	/// @param k Non-negative order.
-	/// @return `k!`, `0! == 1`.
-	auto factorial(SizeType k) -> Real;
-	/// @brief Highest index with a non-negligible coefficient.
-	/// @param poly Ascending coefficients.
-	/// @return Effective degree, `0` for the zero polynomial.
-	auto effective_degree(const Polynomial &poly) -> SizeType;
 	/// @brief Core `P^{(k)}(c)` computation.
 	/// @param c Point of evaluation.
 	/// @param poly Ascending coefficients.

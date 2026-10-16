@@ -1,6 +1,7 @@
 #include <chapter1/interpolation/horner.hpp>
 #include <config.hpp>
 #include <math_object.hpp>
+#include <math_utils.hpp>
 #include <ui/table.hpp>
 
 #include <fmt/format.h>
@@ -75,26 +76,11 @@ namespace detail {
 			fmt::println("R = {:.{}g}", division.remainder, config::kDisplayPrecision);
 	}
 
-	auto factorial(SizeType k) -> Real {
-		Real result = 1;
-		for (SizeType i = 2; i <= k; ++i)
-			result *= static_cast<Real>(i);
-		return result;
-	}
-
-	auto effective_degree(const Polynomial &poly) -> SizeType {
-		for (SizeType i = poly.size(); i > 0; --i) {
-			if (std::abs(poly[i - 1]) >= config::kNearZeroThreshold)
-				return i - 1;
-		}
-		return 0;
-	}
-
 	auto kth_derivative_value(Real c, const Polynomial &poly, SizeType k) -> Real {
 		if (poly.empty())
 			return 0;
 
-		if (k > effective_degree(poly))
+		if (k > utils::effective_degree(poly))
 			return 0;
 
 		Polynomial		 current = poly;
@@ -106,7 +92,7 @@ namespace detail {
 				return 0;
 		}
 
-		return factorial(k) * evaluate_polynomial(c, current);
+		return utils::factorial(k) * evaluate_polynomial(c, current);
 	}
 
 	auto build_derivative_history(Real c, const Polynomial &poly, SizeType k) -> DerivativeHistory {
@@ -291,13 +277,13 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 		return;
 	}
 
-	auto n		 = detail::effective_degree(poly);
+	auto n		 = utils::effective_degree(poly);
 	auto history = detail::build_derivative_history(c, poly, k);
 	detail::render_derivative_table(c, poly, std::min(n, k), history);
 
 	for (SizeType i = 0; i <= std::min(n, k); i++) {
 		auto value_i	= detail::evaluate_polynomial(c, history.quotients[i]);
-		auto derivative = detail::factorial(i) * value_i;
+		auto derivative = utils::factorial(i) * value_i;
 
 		fmt::print("k = {}\r\n", i);
 		if (std::abs(value_i) < config::kNearZeroThreshold &&
