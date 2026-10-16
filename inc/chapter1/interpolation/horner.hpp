@@ -4,6 +4,8 @@
 
 #include <math_object.hpp>
 
+#include <string>
+
 namespace detail {
 
 	/// @brief Evaluate `P(x)` with the Horner scheme.
@@ -72,8 +74,10 @@ namespace detail {
 	/// @brief Render the `i | x_i | w_i(x)` table.
 	/// @param nodes List of roots.
 	/// @param history Precomputed node polynomial history.
-	auto render_nodes_polynomial_table(const RealList &nodes, const PolynomialList &history)
-		-> void;
+	/// @param var Variable label (default "x").
+	auto render_nodes_polynomial_table(const RealList		&nodes,
+									   const PolynomialList &history,
+									   const std::string	&var = "x") -> void;
 } // namespace detail
 
 /// @brief Print `P(x)` and `P(x0)` as plain text.
@@ -98,4 +102,5 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void;
 auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> void;
 /// @brief Render the table of node polynomials.
 /// @param nodes List of roots.
-auto display_nodes_polynomial_table(const RealList &nodes) -> void;
+/// @param var Variable label (default "x").
+auto display_nodes_polynomial_table(const RealList &nodes, const std::string &var = "x") -> void;

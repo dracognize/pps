@@ -213,8 +213,9 @@ namespace detail {
 		return history;
 	}
 
-	auto render_nodes_polynomial_table(const RealList &nodes, const PolynomialList &history)
-		-> void {
+	auto render_nodes_polynomial_table(const RealList		&nodes,
+									   const PolynomialList &history,
+									   const std::string	&var) -> void {
 		SizeType k = history.back().size() - 1;
 		SizeType n = nodes.size();
 
@@ -225,7 +226,7 @@ namespace detail {
 		header.reserve(k + 3);
 
 		header.emplace_back("");
-		header.emplace_back("");
+		header.push_back(fmt::format("w_(i+1)({})", var));
 		for (SizeType j = 0; j <= k; ++j) {
 			header.push_back(fmt::format("a{}", k - j));
 		}
@@ -235,7 +236,7 @@ namespace detail {
 		row.reserve(k + 3);
 
 		row.emplace_back("i");
-		row.emplace_back("x_i");
+		row.push_back(fmt::format("{}_i", var));
 		for (SizeType j = 0; j < k; ++j) {
 			row.push_back("");
 		}
@@ -328,7 +329,7 @@ auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> 
 	detail::print_horner_multiplication(a, b, product);
 }
 
-auto display_nodes_polynomial_table(const RealList &nodes) -> void {
+auto display_nodes_polynomial_table(const RealList &nodes, const std::string &var) -> void {
 	if (nodes.empty()) {
 		fmt::print("No nodes provided.\r\n");
 		return;
@@ -341,7 +342,7 @@ auto display_nodes_polynomial_table(const RealList &nodes) -> void {
 	fmt::print("\r\n\r\n");
 	fmt::print("Node polynomials' coefficients\r\n");
 	const auto history = detail::build_node_polynomial_history(nodes);
-	detail::render_nodes_polynomial_table(nodes, history);
+	detail::render_nodes_polynomial_table(nodes, history, var);
 
-	fmt::print("Node Polynomial: w_{}(x) = {}\r\n", nodes.size(), history.back());
+	fmt::print("Node Polynomial: w_{}({}) = {}\r\n", nodes.size(), var, history.back());
 }
