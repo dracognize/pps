@@ -31,12 +31,16 @@ auto operator*(const Real &scalar, const Polynomial &poly) -> Polynomial {
 	return poly * scalar;
 }
 auto Polynomial::operator*(const Polynomial &other) const -> Polynomial {
-	Polynomial result(utils::effective_degree(*this) + utils::effective_degree(other), 0.0);
+	const SizeType deg_a = utils::effective_degree(*this);
+	const SizeType deg_b = utils::effective_degree(other);
+	Polynomial result(deg_a + deg_b + 1, 0.0);
 	for (SizeType i = 0; i < other.size(); ++i) {
-		if (std::abs(other[i] < config::kNearZeroThreshold))
+		if (std::abs(other[i]) < config::kNearZeroThreshold)
 			continue;
 
 		for (SizeType k = 0; k < (*this).size(); ++k) {
+			if (std::abs((*this)[k]) < config::kNearZeroThreshold)
+				continue;
 			result[i + k] += (*this)[k] * other[i];
 		}
 	}

@@ -117,7 +117,7 @@ namespace detail {
 	}
 
 	auto render_Stirling_interpolation(const EquidistantHistory &history) -> void {
-		SizeType n = history.node_polys.size() / 2;
+		SizeType n = history.finite_diffs.size() / 2;
 
 		fmt::print("Divided differences table Δ[j][i] = Δ[j + 1][i-1] - Δ[j][i-1] (Δ[i][k] = "
 				   "Δ^(i)y_k)\r\n");
@@ -160,7 +160,7 @@ namespace detail {
 
 		fmt::print("\r\nNode polynomials' coefficients w_(i+1)(t^2) (w0(t^2) = 1)\r\n");
 		RealList t_nodes{};
-		for (SizeType i = 1; i <= n; ++i) {
+		for (SizeType i = 1; i <= n - 1; ++i) {
 			t_nodes.push_back(std::pow(static_cast<double>(i), 2));
 		}
 		detail::render_nodes_polynomial_table(t_nodes, history.node_polys, "t", 2);
@@ -172,7 +172,7 @@ namespace {
 		const RealTable		 &fwd_diffs	 = history.finite_diffs;
 		const PolynomialList &node_polys = history.node_polys;
 
-		SizeType   n = node_polys.back().size() / 2;
+		SizeType   n = fwd_diffs.size() / 2;
 		Polynomial result(2 * n + 1, 0.0);
 
 		result = result + Polynomial{fwd_diffs[n][0]};

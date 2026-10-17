@@ -30,7 +30,7 @@ namespace detail {
 
 		SizeType n = nodes.size() / 2;
 		Real	 h = nodes[1] - nodes[0];
-		for (SizeType i = 1; i < 2 * n; ++i) {
+		for (SizeType i = 1; i < 2 * n - 1; ++i) {
 			if (nodes[i + 1] - nodes[i] != h)
 				return {};
 		}
@@ -68,7 +68,7 @@ namespace detail {
 
 		SizeType n = nodes.size() / 2;
 		Real	 h = nodes[1] - nodes[0];
-		for (SizeType i = 1; i < 2 * n; ++i) {
+		for (SizeType i = 1; i < 2 * n - 1; ++i) {
 			if (nodes[i + 1] - nodes[i] != h)
 				return {};
 		}
@@ -110,7 +110,7 @@ namespace detail {
 	}
 
 	auto render_Bessel_interpolation(const EquidistantHistory &history) -> void {
-		SizeType n = history.node_polys.size() / 2;
+		SizeType n = history.finite_diffs.size() / 2;
 
 		fmt::print("Divided differences table Δ[j][i] = Δ[j + 1][i-1] - Δ[j][i-1] (Δ[i][k] = "
 				   "Δ^(i)y_k)\r\n");
@@ -133,7 +133,7 @@ namespace detail {
 
 		fmt::print("Forward coefficients (Δ[{}][0] = y{})\r\n", n, n);
 		fmt::print("c_(2k)   = (Δ[n-k][2k] + Δ[n-1-k][2k]) / 2 (k=0,n-1), n = {}\r\n", n);
-		fmt::print("c_(2k+1) = Δ[n-1-k][2k+1]      			   (k=0,n-1), n = {]\r\n", n);
+		fmt::print("c_(2k+1) = Δ[n-1-k][2k+1]      			   (k=0,n-1), n = {}\r\n", n);
 		std::vector<std::vector<std::string>> coeff_table{};
 		const auto							  fwd_diffs = history.finite_diffs;
 		coeff_table.push_back({"i"});
@@ -202,6 +202,6 @@ auto display_Bessel_interpolation(const RealList &nodes, const RealList &values)
 		n - 1);
 	fmt::print("\r\n                                      = {}\r\n", fmt::format("{:u}", poly));
 	fmt::print("Interpolation parameter: u = (x - x{}) / h - 0.5\r\n", n - 1);
-	fmt::print("x{} = {}\r\n", n -1, nodes[n]);
+	fmt::print("x{} = {}\r\n", n - 1, nodes[n - 1]);
 	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);
 }
