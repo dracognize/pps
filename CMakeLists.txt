@@ -53,6 +53,7 @@ add_library(
 	src/chapter1/interpolation/polynomial/Newton.cpp
 	src/chapter1/interpolation/polynomial/Gauss.cpp
 	src/chapter1/interpolation/polynomial/Stirling.cpp
+	src/chapter1/interpolation/polynomial/Bessel.cpp
 )
 
 target_include_directories(
