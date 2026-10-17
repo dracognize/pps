@@ -52,6 +52,7 @@ add_library(
 	src/chapter1/interpolation/polynomial/Lagrange.cpp
 	src/chapter1/interpolation/polynomial/Newton.cpp
 	src/chapter1/interpolation/polynomial/Gauss.cpp
+	src/chapter1/interpolation/polynomial/Stirling.cpp
 )
 
 target_include_directories(

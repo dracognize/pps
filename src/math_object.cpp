@@ -1,6 +1,7 @@
 #include <config.hpp>
 
 #include <math_object.hpp>
+#include <math_utils.hpp>
 
 #include <cmath>
 #include <string>
@@ -25,7 +26,19 @@ auto Polynomial::operator*(const Real &scalar) const -> Polynomial {
 	return result;
 }
 auto operator*(const Real &scalar, const Polynomial &poly) -> Polynomial {
-    return poly * scalar;
+	return poly * scalar;
+}
+auto Polynomial::operator*(const Polynomial &other) const -> Polynomial {
+	Polynomial result(utils::effective_degree(*this) + utils::effective_degree(other), 0.0);
+	for (SizeType i = 0; i < other.size(); ++i) {
+		if (std::abs(other[i] < config::kNearZeroThreshold))
+			continue;
+
+		for (SizeType k = 0; k < (*this).size(); ++k) {
+			result[i + k] += (*this)[k] * other[i];
+		}
+	}
+	return result;
 }
 
 namespace {

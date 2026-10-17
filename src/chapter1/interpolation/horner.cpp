@@ -215,7 +215,8 @@ namespace detail {
 
 	auto render_nodes_polynomial_table(const RealList		&nodes,
 									   const PolynomialList &history,
-									   const std::string	&var) -> void {
+									   const std::string	&var,
+									   const SizeType		&pow) -> void {
 		SizeType k = history.back().size() - 1;
 		SizeType n = nodes.size();
 
@@ -226,9 +227,10 @@ namespace detail {
 		header.reserve(k + 3);
 
 		header.emplace_back("");
-		header.push_back(fmt::format("w_(i+1)({})", var));
+		header.push_back(
+			fmt::format("w_(i+1)({}{})", var, pow == 1 ? "" : fmt::format("^{}", pow)));
 		for (SizeType j = 0; j <= k; ++j) {
-			header.push_back(fmt::format("a{}", k - j));
+			header.push_back(fmt::format("a{}", (k - j) * pow));
 		}
 		rows.push_back(header);
 
@@ -236,7 +238,7 @@ namespace detail {
 		row.reserve(k + 3);
 
 		row.emplace_back("i");
-		row.push_back(fmt::format("{}_i", var));
+		row.push_back(fmt::format("{}{}_i", var, pow == 1 ? "" : fmt::format("^{}", pow)));
 		for (SizeType j = 0; j < k; ++j) {
 			row.push_back("");
 		}
@@ -258,6 +260,7 @@ namespace detail {
 		}
 
 		ui::render_table(rows, config::kTableMinWidth);
+		fmt::print("a_({}k + r) = 0 (r = 1,{})\r\n", pow, pow - 1);
 	}
 } // namespace detail
 
@@ -329,7 +332,9 @@ auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> 
 	detail::print_horner_multiplication(a, b, product);
 }
 
-auto display_nodes_polynomial_table(const RealList &nodes, const std::string &var) -> void {
+auto display_nodes_polynomial_table(const RealList	  &nodes,
+									const std::string &var,
+									const SizeType	  &pow) -> void {
 	if (nodes.empty()) {
 		fmt::print("No nodes provided.\r\n");
 		return;
@@ -342,7 +347,11 @@ auto display_nodes_polynomial_table(const RealList &nodes, const std::string &va
 	fmt::print("\r\n\r\n");
 	fmt::print("Node polynomials' coefficients\r\n");
 	const auto history = detail::build_node_polynomial_history(nodes);
-	detail::render_nodes_polynomial_table(nodes, history, var);
+	detail::render_nodes_polynomial_table(nodes, history, var, pow);
 
-	fmt::print("Node Polynomial: w_{}({}) = {}\r\n", nodes.size(), var, history.back());
+	fmt::print("Node Polynomial: w_{}({}{}) = {}\r\n",
+			   nodes.size(),
+			   var,
+			   pow == 1 ? "" : fmt::format("^{}", pow),
+			   history.back());
 }

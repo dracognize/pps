@@ -75,9 +75,11 @@ namespace detail {
 	/// @param nodes List of roots.
 	/// @param history Precomputed node polynomial history.
 	/// @param var Variable label (default "x").
+	/// @param pow compose power of `var' (default pow = 1).
 	auto render_nodes_polynomial_table(const RealList		&nodes,
 									   const PolynomialList &history,
-									   const std::string	&var = "x") -> void;
+									   const std::string	&var = "x",
+									   const SizeType		&pow = 1) -> void;
 } // namespace detail
 
 /// @brief Print `P(x)` and `P(x0)` as plain text.
@@ -103,4 +105,7 @@ auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> 
 /// @brief Render the table of node polynomials.
 /// @param nodes List of roots.
 /// @param var Variable label (default "x").
-auto display_nodes_polynomial_table(const RealList &nodes, const std::string &var = "x") -> void;
+/// @param pow Compose power of `var` (default pow = 1).
+auto display_nodes_polynomial_table(const RealList	  &nodes,
+									const std::string &var = "x",
+									const SizeType	  &pow = 1) -> void;

@@ -18,4 +18,24 @@ namespace utils {
 		}
 		return 0;
 	}
+
+	auto compose_power(const Polynomial &poly, SizeType pow) -> Polynomial {
+		if (poly.empty())
+			return {};
+		if (pow == 1)
+			return poly;
+
+		Polynomial result((poly.size() - 1) * pow + 1, 0.0);
+
+		if (pow == 0) {
+			for (auto &coeff : poly)
+				result[0] += coeff;
+			return result;
+		}
+
+		for (SizeType i = 0; i < poly.size(); ++i)
+			result[i * pow] = poly[i];
+
+		return result;
+	}
 } // namespace utils

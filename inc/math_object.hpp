@@ -19,13 +19,15 @@ using RealTable = std::vector<RealList>;
 
 /// @brief Polynomial in ascending coefficient order.
 /// @details `poly[i]` is the coefficient of `x^i`. Empty means zero.
-/// @details operators `+` and `*` are defined for polynomial addition and scalar multiplication.
+/// @details operators `+` and `*` are defined for polynomial addition, scalar multiplication,
+/// polynomial multiplication.
 struct Polynomial : std::vector<Real> {
 		using std::vector<Real>::vector;
 
 		auto		operator+(const Polynomial &other) const -> Polynomial;
 		auto		operator*(const Real &scalar) const -> Polynomial;
 		friend auto operator*(const Real &scalar, const Polynomial &poly) -> Polynomial;
+		auto		operator*(const Polynomial &other) const -> Polynomial;
 };
 
 /// @brief Result of dividing by a degree-1 divisor.
