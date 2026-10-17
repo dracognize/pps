@@ -2,6 +2,7 @@
 /// @file math_object.hpp
 /// @brief Core math types: scalars, polynomials, division results.
 
+#include <string_view>
 #include <vector>
 
 #include <fmt/format.h>
@@ -82,11 +83,27 @@ struct fmt::range_format_kind<Polynomial, Char>
 	: std::integral_constant<fmt::range_format, fmt::range_format::disabled> {};
 
 /// @brief Formatter rendering `5*x^3 + 4*x^2 + ...` (`0` when empty).
+/// @details The indeterminate is `x` by default. A custom variable name may be
+/// passed as the format spec, e.g. `fmt::format("{:t}", poly)` renders in `t`.
+/// Blank specs (e.g. `{}`) fall back to `x`.
 template <> struct fmt::formatter<Polynomial> {
-		constexpr auto parse(fmt::format_parse_context &ctx) {
-			return ctx.begin();
+		constexpr auto parse(fmt::format_parse_context &ctx) -> const char * {
+			auto it	 = ctx.begin();
+			auto end = ctx.end();
+			if (it == end || *it == '}')
+				return it; // Keep the default variable name.
+
+			auto begin = it;
+			while (it != end && *it != '}')
+				++it;
+			var_ = std::string_view(begin, static_cast<std::size_t>(it - begin));
+			return it;
 		}
 
 		auto format(const Polynomial &poly, fmt::format_context &ctx) const -> decltype(ctx.out());
+
+	private:
+		/// Indeterminate used when rendering; `x` unless overridden by the spec.
+		std::string_view var_{"x"};
 };
 /// @endcond
