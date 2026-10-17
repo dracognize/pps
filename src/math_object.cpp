@@ -3,8 +3,10 @@
 #include <math_object.hpp>
 #include <math_utils.hpp>
 
+#include <cctype>
 #include <cmath>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -54,19 +56,22 @@ namespace {
 		return fmt::format("{:.{}g}", abs_c, config::kDisplayPrecision);
 	}
 
-	auto monomial_body(Real abs_c, SizeType power) -> std::string {
+	auto monomial_body(Real abs_c, SizeType power, std::string_view var) -> std::string {
 		if (power == 0)
 			return format_abs_coeff(abs_c);
 		if (power == 1)
-			return is_unit_coeff(abs_c) ? "x" : format_abs_coeff(abs_c) + "*x";
-		return is_unit_coeff(abs_c) ? fmt::format("x^{}", power)
-									: fmt::format("{}*x^{}", format_abs_coeff(abs_c), power);
+			return is_unit_coeff(abs_c) ? std::string(var)
+										: format_abs_coeff(abs_c) + "*" + std::string(var);
+		return is_unit_coeff(abs_c)
+				   ? fmt::format("{}^{}", var, power)
+				   : fmt::format("{}*{}^{}", format_abs_coeff(abs_c), var, power);
 	}
 
-	auto append_term(std::string &out, bool &is_first, Real coeff, SizeType power) -> void {
+	auto append_term(
+		std::string &out, bool &is_first, Real coeff, SizeType power, std::string_view var) -> void {
 		if (is_zero_coeff(coeff))
 			return;
-		std::string body = monomial_body(std::abs(coeff), power);
+		std::string body = monomial_body(std::abs(coeff), power, var);
 		if (is_first) {
 			out += (coeff < 0 ? "-" : "") + body;
 			is_first = false;
@@ -86,20 +91,31 @@ auto fmt::formatter<Polynomial>::format(const Polynomial &poly, fmt::format_cont
 			nonzero.emplace_back(i, poly[i]);
 	}
 
+	std::string_view var = var_;
+	while (!var.empty() && std::isspace(static_cast<unsigned char>(var.front())))
+		var.remove_prefix(1);
+	while (!var.empty() && std::isspace(static_cast<unsigned char>(var.back())))
+		var.remove_suffix(1);
+	if (var.empty())
+		var = "x";
+
 	std::string out;
 	if (nonzero.empty()) {
 		out = "0";
 	} else if (nonzero.size() <= config::kMaxFullTerms) {
 		bool is_first = true;
 		for (auto it = nonzero.rbegin(); it != nonzero.rend(); ++it)
-			append_term(out, is_first, it->second, it->first);
+			append_term(out, is_first, it->second, it->first, var);
 	} else {
 		bool is_first = true;
-		append_term(out, is_first, nonzero.back().second, nonzero.back().first);
-		append_term(
-			out, is_first, nonzero[nonzero.size() - 2].second, nonzero[nonzero.size() - 2].first);
+		append_term(out, is_first, nonzero.back().second, nonzero.back().first, var);
+		append_term(out,
+					is_first,
+					nonzero[nonzero.size() - 2].second,
+					nonzero[nonzero.size() - 2].first,
+					var);
 		out += " + ...";
-		append_term(out, is_first, nonzero.front().second, nonzero.front().first);
+		append_term(out, is_first, nonzero.front().second, nonzero.front().first, var);
 	}
 
 	return fmt::format_to(ctx.out(), "{}", out);

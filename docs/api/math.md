@@ -19,7 +19,9 @@ struct Polynomial : std::vector<Real> { ... };
 Ascending coefficient order: `poly[i]` is the coefficient of `x^i`.
 An empty polynomial is the zero polynomial. Degree queries ignore
 trailing coefficients below `config::kNearZeroThreshold` (`1e-12`).
-Pretty-prints as `5*x^3 + 4*x^2 + ...` (`0` when empty).
+Pretty-prints as `5*x^3 + 4*x^2 + ...` (`0` when empty). The
+indeterminate is `x` by default; pass a variable name as the format
+spec to override it: `fmt::format("{:t}", poly)` renders `5*t^3 + 4*t^2 + ...`.
 
 ## PolynomialDivision
 
