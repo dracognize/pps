@@ -11,7 +11,7 @@ namespace detail {
 	/// @return The interpolation history; empty when invalid.
 	auto build_GaussI_history(const RealList &nodes, const RealList &values) -> EquidistantHistory;
 
-	/// @brief Compute the Gauss I polynomial for equidistant nodes.
+	/// @brief Compute the Gauss I polynomial for equidistant nodes (interpolation parameter: t = (x - xn)/h).
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation polynomial; empty when invalid.
@@ -27,7 +27,7 @@ namespace detail {
 	/// @return The interpolation history; empty when invalid.
 	auto build_GaussII_history(const RealList &nodes, const RealList &values) -> EquidistantHistory;
 
-	/// @brief Compute the Gauss II polynomial for equidistant nodes.
+	/// @brief Compute the Gauss II polynomial for equidistant nodes (interpolation parameter: t = (x - xn)/h).
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation polynomial; empty when invalid.

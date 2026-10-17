@@ -53,7 +53,7 @@ namespace detail {
 	auto build_Newton_equidistant_forward_history(const RealList &nodes, const RealList &values)
 		-> EquidistantHistory;
 
-	/// @brief Compute the Newton forward polynomial for equidistant nodes.
+	/// @brief Compute the Newton forward polynomial for equidistant nodes (interpolation parameter: t = (x - xn)/h). 
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation polynomial; empty when invalid.
@@ -73,7 +73,7 @@ namespace detail {
 	auto build_Newton_equidistant_backward_history(const RealList &nodes, const RealList &values)
 		-> EquidistantHistory;
 
-	/// @brief Compute the Newton backward polynomial for equidistant nodes.
+	/// @brief Compute the Newton backward polynomial for equidistant nodes (interpolation parameter: t = (x - xn)/h).
 	/// @param nodes Interpolation nodes.
 	/// @param values Function values at nodes.
 	/// @return The interpolation polynomial; empty when invalid.
