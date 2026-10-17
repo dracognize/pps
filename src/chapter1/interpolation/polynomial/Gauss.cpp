@@ -338,7 +338,7 @@ auto display_GaussI_interpolation(const RealList &nodes, const RealList &values)
 			   "c_i / i! * w_i(t)",
 			   n,
 			   2 * n);
-	fmt::print("\r\n                                       = {}\r\n", poly);
+	fmt::print("\r\n                                       = {}\r\n", fmt::format("{:t}", poly));
 	fmt::print("Interpolation parameter: t = (x - x{}) / h\r\n", n);
 	fmt::print("x{} = {}\r\n", n, nodes[n]);
 	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);
@@ -360,7 +360,7 @@ auto display_GaussII_interpolation(const RealList &nodes, const RealList &values
 			   "c_i / i! * w_i(t)",
 			   n,
 			   2 * n);
-	fmt::print("\r\n                                        = {}\r\n", poly);
+	fmt::print("\r\n                                        = {}\r\n", fmt::format("{:t}", poly));
 	fmt::print("Interpolation parameter: t = (x - x{}) / h\r\n", n);
 	fmt::print("x{} = {}\r\n", n, nodes[n]);
 	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);

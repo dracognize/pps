@@ -139,8 +139,8 @@ namespace detail {
 		ui::render_table(diff_table, config::kTableMinWidth);
 
 		fmt::print("Forward coefficients (Δ[{}][0] = y{})\r\n", n, n);
-		fmt::print("c_(2k-1) = (Δ[n-k+1][2k-1] + Δ[n-k][2k-1]) / 2 (k=1,n)\r\n");
-		fmt::print("c_(2k)   = Δ[n-k][2k]            			   (k=0,n)\r\n");
+		fmt::print("c_(2k-1) = (Δ[n-k+1][2k-1] + Δ[n-k][2k-1]) / 2 (k=1,n), n = {}\r\n", n);
+		fmt::print("c_(2k)   = Δ[n-k][2k]            			   (k=0,n), n = {}\r\n", n);
 		std::vector<std::vector<std::string>> coeff_table{};
 		const auto							  fwd_diffs = history.finite_diffs;
 		coeff_table.push_back({"i", "0"});
@@ -154,7 +154,7 @@ namespace detail {
 			coeff_table[1].push_back(format_table_value(odd_coeff));
 			coeff_table[1].push_back(format_table_value(even_coeff));
 			coeff_table[2].push_back(format_table_value(odd_coeff / utils::factorial(2 * i + 1)));
-			coeff_table[2].push_back(format_table_value(even_coeff / utils::factorial(2 * 2 + 1)));
+			coeff_table[2].push_back(format_table_value(even_coeff / utils::factorial(2 * i + 2)));
 		}
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
@@ -210,7 +210,7 @@ auto display_Stirling_interpolation(const RealList &nodes, const RealList &value
 		n,
 		n,
 		n - 1);
-	fmt::print("\r\n                                           = {}\r\n", poly);
+	fmt::print("\r\n                                           = {}\r\n", fmt::format("{:t}", poly));
 	fmt::print("Interpolation parameter: t = (x - x{}) / h\r\n", n);
 	fmt::print("x{} = {}\r\n", n, nodes[n]);
 	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);

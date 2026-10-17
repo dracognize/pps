@@ -586,7 +586,7 @@ auto display_Newton_equidistant_forward(const RealList &nodes, const RealList &v
 	fmt::print("\r\nNewton interpolated polynomials: P(x) = P(x0 + th) = Q(t) = sum[i=0,{}] "
 			   "Δ[0][i] / i! * w_i(t)",
 			   nodes.size() - 1);
-	fmt::print("\r\n                                      = {}\r\n", poly);
+	fmt::print("\r\n                                      = {}\r\n", fmt::format("{:t}", poly));
 	fmt::print("Interpolation parameter: t = (x - x0) / h\r\n");
 	fmt::print("x0 = {}\r\n", nodes[0]);
 	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);
@@ -610,7 +610,7 @@ auto display_Newton_equidistant_backward(const RealList &nodes, const RealList &
 			   n,
 			   n,
 			   n);
-	fmt::print("\r\n                                      = {}\r\n", poly);
+	fmt::print("\r\n                                      = {}\r\n", fmt::format("{:t}", poly));
 	fmt::print("Interpolation parameter: t = (x - x{}) / h\r\n", n);
 	fmt::print("x{} = {:.{}g}\r\n", n, nodes[n], config::kDisplayPrecision);
 	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);
