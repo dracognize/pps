@@ -260,7 +260,8 @@ namespace detail {
 		}
 
 		ui::render_table(rows, config::kTableMinWidth);
-		fmt::print("a_({}k + r) = 0 (r = 1,{})\r\n", pow, pow - 1);
+		if (k > 1)
+			fmt::print("a_({}k + r) = 0 (r = 1,{})\r\n", pow, pow - 1);
 	}
 } // namespace detail
 
