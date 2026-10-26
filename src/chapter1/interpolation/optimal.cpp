@@ -1,7 +1,7 @@
 #include <chapter1/interpolation/optimal.hpp>
 #include <config.hpp>
+#include <io/table.hpp>
 #include <math_object.hpp>
-#include <ui/table.hpp>
 
 #include <cmath>
 #include <cstddef>

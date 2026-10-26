@@ -1,8 +1,8 @@
 #include <chapter1/interpolation/horner.hpp>
 #include <chapter1/interpolation/polynomial/Lagrange.hpp>
 #include <config.hpp>
+#include <io/table.hpp>
 #include <math_object.hpp>
-#include <ui/table.hpp>
 
 #include <fmt/format.h>
 

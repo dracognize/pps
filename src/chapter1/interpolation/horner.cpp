@@ -1,8 +1,8 @@
 #include <chapter1/interpolation/horner.hpp>
 #include <config.hpp>
+#include <io/table.hpp>
 #include <math_object.hpp>
 #include <math_utils.hpp>
-#include <ui/table.hpp>
 
 #include <fmt/format.h>
 

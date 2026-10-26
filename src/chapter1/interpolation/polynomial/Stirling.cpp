@@ -1,9 +1,9 @@
 #include <chapter1/interpolation/horner.hpp>
 #include <chapter1/interpolation/polynomial/Stirling.hpp>
 #include <config.hpp>
+#include <io/table.hpp>
 #include <math_object.hpp>
 #include <math_utils.hpp>
-#include <ui/table.hpp>
 
 #include <fmt/format.h>
 
