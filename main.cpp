@@ -1,6 +1,10 @@
 #include <chapter1/interpolation/horner.hpp>
 #include <chapter1/interpolation/optimal.hpp>
+#include <chapter1/interpolation/polynomial/Bessel.hpp>
+#include <chapter1/interpolation/polynomial/Gauss.hpp>
 #include <chapter1/interpolation/polynomial/Lagrange.hpp>
+#include <chapter1/interpolation/polynomial/Newton.hpp>
+#include <chapter1/interpolation/polynomial/Stirling.hpp>
 #include <math_object.hpp>
 
 #include <fmt/base.h>
@@ -17,19 +21,21 @@ auto main() -> int {
 	const Polynomial poly = {2, 3, 4, 5};
 	const Real		 c	  = 2;
 
-	fmt::print("Chebyshev Nodes:\r\n");
-	display_chebyshev_nodes(-1.0, 1.0, 5);
+	// fmt::print("Chebyshev Nodes:\r\n");
+	// display_chebyshev_nodes(-1.0, 1.0, 5);
 
-	fmt::print("\r\nPolynomial Evaluation\r\n");
-	display_polynomial_evaluation(c, poly);
+	// fmt::print("\r\nPolynomial Evaluation\r\n");
+	// display_polynomial_evaluation(c, poly);
 
-	fmt::print("\r\nHorner Division\r\n");
-	const Polynomial b = {-c, 1}; // (x - c)
-	display_horner_division(poly, b);
+	// fmt::print("\r\nHorner Division\r\n");
+	// const Polynomial b = {-c, 1}; // (x - c)
+	// display_horner_division(poly, b);
 
-	fmt::print("\r\nk-th Derivative at x = c (generalized Horner tableau)\r\n");
-	for (SizeType k = 0; k <= 4; ++k) {
-		fmt::print("\r\nk = {}\r\n", k);
-		display_kth_derivative(c, poly, k);
-	}
+	// fmt::print("\r\nk-th Derivative at x = c (generalized Horner tableau)\r\n");
+	// for (SizeType k = 0; k <= 4; ++k) {
+	// 	fmt::print("\r\nk = {}\r\n", k);
+	// 	display_kth_derivative(c, poly, k);
+	// }
+
+	display_Bessel_interpolation({2, 3, 4, 5, 6, 7}, {2, 3, 4, 5, 6, 7});
 }

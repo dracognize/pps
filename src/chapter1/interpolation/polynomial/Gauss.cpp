@@ -129,7 +129,26 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto number_of_cols = diff_table.front().size();
+
+		auto transform_table = [n, number_of_cols](ftxui::Table &table) {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+			ui::Point point = {1, static_cast<int>(n + 1)};
+
+			while (point.x < number_of_cols) {
+				table.SelectCell(point.x, point.y).DecorateCells(color(ftxui::Color::Red));
+				table.SelectCell(point.x, point.y).DecorateCells(ftxui::bold);
+
+				if (point.x % 2 == 0) {
+					point.y--;
+				}
+				point.x++;
+			}
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("Forward coefficients (Δ[{}][0] = y{})\r\n", n, n);
 		fmt::print("c_(2k-1) = Δ[n-(k-1)][2k-1] (k=1,n)\r\n");
@@ -147,8 +166,7 @@ namespace detail {
 		}
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
-		fmt::print(
-			"\r\nNode polynomials' coefficients w_(i+1)(t) (w0(t) = 1)\r\n");
+		fmt::print("\r\nNode polynomials' coefficients w_(i+1)(t) (w0(t) = 1)\r\n");
 		RealList t_nodes{};
 		for (SizeType i = 1; i <= n; ++i) {
 			t_nodes.push_back(-static_cast<double>(i - 1));
@@ -157,7 +175,8 @@ namespace detail {
 		detail::render_nodes_polynomial_table(t_nodes, history.node_polys, "t");
 	}
 
-    auto build_GaussII_history(const RealList &nodes, const RealList &values) -> EquidistantHistory {
+	auto build_GaussII_history(const RealList &nodes, const RealList &values)
+		-> EquidistantHistory {
 		if (nodes.empty() || nodes.size() != values.size())
 			return {};
 		if (nodes.size() % 2 == 0)
@@ -263,7 +282,26 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto number_of_cols = diff_table.front().size();
+
+		auto transform_table = [n, number_of_cols](ftxui::Table &table) {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+			ui::Point point = {1, static_cast<int>(n + 1)};
+
+			while (point.x < number_of_cols) {
+				table.SelectCell(point.x, point.y).DecorateCells(color(ftxui::Color::Red));
+				table.SelectCell(point.x, point.y).DecorateCells(ftxui::bold);
+
+				if (point.x % 2 != 0) {
+					point.y--;
+				}
+				point.x++;
+			}
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("Forward coefficients (Δ[{}][0] = y{})\r\n", n, n);
 		fmt::print("c_(2k-1) = Δ[n-k][2k-1] (k=1,n)\r\n");
@@ -281,8 +319,7 @@ namespace detail {
 		}
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
-		fmt::print(
-			"\r\nNode polynomials' coefficients w_(i+1)(t) (w0(t) = 1)\r\n");
+		fmt::print("\r\nNode polynomials' coefficients w_(i+1)(t) (w0(t) = 1)\r\n");
 		RealList t_nodes{};
 		for (SizeType i = 1; i <= n; ++i) {
 			t_nodes.push_back(static_cast<double>(i - 1));
@@ -307,7 +344,7 @@ namespace {
 		return result;
 	}
 
-    auto GaussII_polynomial(const EquidistantHistory &history) -> Polynomial {
+	auto GaussII_polynomial(const EquidistantHistory &history) -> Polynomial {
 		const RealTable		 &fwd_diffs	 = history.finite_diffs;
 		const PolynomialList &node_polys = history.node_polys;
 

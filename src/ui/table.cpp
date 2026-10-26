@@ -1,5 +1,6 @@
 #include <ui/table.hpp>
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -13,20 +14,21 @@
 #include <windows.h>
 #endif
 
-
 namespace ui {
 
-	auto render_table(const std::vector<std::vector<std::string>> &rows, int min_width) -> void {
+	auto render_table(const std::vector<std::vector<std::string>> &rows,
+					  int										   min_width,
+					  std::function<void(ftxui::Table &)>		   transform) -> void {
 		using namespace ftxui;
 
 		if (rows.empty())
 			return;
-		#ifdef _WIN32
+#ifdef _WIN32
 		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    	DWORD original_mode;
-    	GetConsoleMode(hOut, &original_mode);
-		#endif
+		DWORD original_mode;
+		GetConsoleMode(hOut, &original_mode);
+#endif
 		auto table = Table(rows);
 
 		table.SelectRow(0).Decorate(color(Color::Cyan));
@@ -40,22 +42,23 @@ namespace ui {
 		for (int col = 0; col < num_cols; ++col)
 			table.SelectColumn(col).DecorateCells(hcenter | size(WIDTH, GREATER_THAN, min_width));
 
+		transform(table);
+
 		auto document = table.Render();
 		auto screen	  = Screen::Create(Dimension::Fit(document, true));
 
 		Render(screen, document);
 		screen.Print();
-		// NOTE: `ResetPosition()` only *returns* the cursor-up sequence for
-		// animation loops — it prints nothing, so calling it here is a no-op.
-		// End the one-shot table on the same stream instead (upstream pattern
-		// from FTXUI's `examples/dom/table.cpp`): on Windows consoles (VT
-		// mode, which FTXUI enables) a bare `\n` moves down without returning
-		// the carriage, so anything printed after `Print()` would start
-		// mid-line and misalign every following row.
-		#ifdef _WIN32
+// NOTE: `ResetPosition()` only *returns* the cursor-up sequence for
+// animation loops — it prints nothing, so calling it here is a no-op.
+// End the one-shot table on the same stream instead (upstream pattern
+// from FTXUI's `examples/dom/table.cpp`): on Windows consoles (VT
+// mode, which FTXUI enables) a bare `\n` moves down without returning
+// the carriage, so anything printed after `Print()` would start
+// mid-line and misalign every following row.
+#ifdef _WIN32
 		SetConsoleMode(hOut, original_mode);
-		#endif
+#endif
 		fmt::println("");
 	}
-
 } // namespace ui

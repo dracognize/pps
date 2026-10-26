@@ -157,7 +157,12 @@ namespace detail {
 		}
 		rows[1][poly.size() + 1] = "";
 
-		ui::render_table(rows, config::kTableMinWidth);
+		auto transform_table = [](ftxui::Table &table) -> void {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+		};
+
+		ui::render_table(rows, config::kTableMinWidth, transform_table);
 	}
 
 	auto multiply_by_linear(const Polynomial &a, const Polynomial &b) -> Polynomial {
@@ -259,8 +264,14 @@ namespace detail {
 			rows.push_back(row);
 		}
 
-		ui::render_table(rows, config::kTableMinWidth);
-		if (k > 1)
+		auto transform_table = [](ftxui::Table &table) -> void {
+			table.SelectColumns(0, 1).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumns(0, 1).DecorateCells(ftxui::bold);
+		};
+
+		ui::render_table(rows, config::kTableMinWidth, transform_table);
+
+		if (pow > 1)
 			fmt::print("a_({}k + r) = 0 (r = 1,{})\r\n", pow, pow - 1);
 	}
 } // namespace detail

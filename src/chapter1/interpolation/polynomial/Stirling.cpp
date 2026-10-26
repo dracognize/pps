@@ -136,7 +136,28 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto number_of_cols = diff_table.front().size();
+
+		auto transform_table = [n, number_of_cols](ftxui::Table &table) {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+
+			ui::Point archor = {0, static_cast<int>(n + 1)};
+
+			for (size_t i = 0; i <= n; ++i) {
+				for (size_t j = 0; j < 3; ++j) {
+					if (archor.x + 2 * i + j < number_of_cols) {
+						table.SelectCell(archor.x + 2 * i + j, archor.y - i)
+							.DecorateCells(color(ftxui::Color::Red));
+						table.SelectCell(archor.x + 2 * i + j, archor.y - i)
+							.DecorateCells(ftxui::bold);
+					}
+				}
+			}
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("Forward coefficients (Δ[{}][0] = y{})\r\n", n, n);
 		fmt::print("c_(2k-1) = (Δ[n-k+1][2k-1] + Δ[n-k][2k-1]) / 2 (k=1,n), n = {}\r\n", n);
@@ -210,7 +231,8 @@ auto display_Stirling_interpolation(const RealList &nodes, const RealList &value
 		n,
 		n,
 		n - 1);
-	fmt::print("\r\n                                           = {}\r\n", fmt::format("{:t}", poly));
+	fmt::print("\r\n                                           = {}\r\n",
+			   fmt::format("{:t}", poly));
 	fmt::print("Interpolation parameter: t = (x - x{}) / h\r\n", n);
 	fmt::print("x{} = {}\r\n", n, nodes[n]);
 	fmt::print("h  = {:.{}g}\r\n", h, config::kDisplayPrecision);

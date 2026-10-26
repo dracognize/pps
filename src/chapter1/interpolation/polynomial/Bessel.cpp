@@ -129,7 +129,30 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto number_of_cols = diff_table.front().size();
+
+		auto transform_table = [n, number_of_cols](ftxui::Table &table) {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+
+			ui::Point archor = {-1, static_cast<int>(n + 1)};
+
+			for (size_t i = 0; i <= n; ++i) {
+				for (size_t j = 0; j < 3; ++j) {
+					if (i == 0 && j == 0)
+						continue;
+					if (archor.x + 2 * i + j < number_of_cols) {
+						table.SelectCell(archor.x + 2 * i + j, archor.y - i)
+							.DecorateCells(color(ftxui::Color::Red));
+						table.SelectCell(archor.x + 2 * i + j, archor.y - i)
+							.DecorateCells(ftxui::bold);
+					}
+				}
+			}
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("Forward coefficients (Δ[{}][0] = y{})\r\n", n, n);
 		fmt::print("c_(2k)   = (Δ[n-k][2k] + Δ[n-1-k][2k]) / 2 (k=0,n-1), n = {}\r\n", n);

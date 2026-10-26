@@ -104,7 +104,15 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto transform_table = [](ftxui::Table &table) {
+			table.SelectColumns(0, 1).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumns(0, 1).DecorateCells(ftxui::bold);
+			table.SelectRow(1).DecorateCells(color(ftxui::Color::Red));
+			table.SelectRow(1).DecorateCells(ftxui::bold);
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("Newton forward coefficients f[0][i] = f[x0,x1,...,x_i] (f[x0] =y0)\r\n");
 		std::vector<std::vector<std::string>> coeff_table{};
@@ -114,6 +122,7 @@ namespace detail {
 			coeff_table[0].push_back(fmt::format("{}", i));
 			coeff_table[1].push_back(format_table_value(history.divided_diffs[0][i]));
 		}
+
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
 		fmt::print(
@@ -205,7 +214,17 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto number_of_rows = diff_table.size();
+
+		auto transform_table = [number_of_rows](ftxui::Table &table) {
+			table.SelectColumns(0, 1).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumns(0, 1).DecorateCells(ftxui::bold);
+			table.SelectRow(number_of_rows - 1).DecorateCells(color(ftxui::Color::Red));
+			table.SelectRow(number_of_rows - 1).DecorateCells(ftxui::bold);
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print(
 			"Newton forward coefficients f[{}][i] = f[x({}-i),x({}-i+1),...,x{}] (f[x{}] =y{})\r\n",
@@ -335,7 +354,15 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto transform_table = [](ftxui::Table &table) {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+			table.SelectRow(1).DecorateCells(color(ftxui::Color::Red));
+			table.SelectRow(1).DecorateCells(ftxui::bold);
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("Forward coefficients (Δ[0][0] =y0)\r\n");
 		std::vector<std::vector<std::string>> coeff_table{};
@@ -459,7 +486,17 @@ namespace detail {
 			}
 			diff_table.push_back(row);
 		}
-		ui::render_table(diff_table, config::kTableMinWidth);
+
+		auto number_of_rows = diff_table.size();
+
+		auto transform_table = [number_of_rows](ftxui::Table &table) {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+			table.SelectRow(number_of_rows - 1).DecorateCells(color(ftxui::Color::Red));
+			table.SelectRow(number_of_rows - 1).DecorateCells(ftxui::bold);
+		};
+
+		ui::render_table(diff_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("Newton forward coefficients (∇[x{}] =y{})\r\n", n, n);
 		std::vector<std::vector<std::string>> coeff_table{};

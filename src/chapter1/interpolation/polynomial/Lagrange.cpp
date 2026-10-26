@@ -104,7 +104,13 @@ namespace detail {
 			}
 			basis_table.push_back(row);
 		}
-		ui::render_table(basis_table, config::kTableMinWidth);
+
+		auto transform_table = [](ftxui::Table &table) {
+			table.SelectColumn(0).DecorateCells(color(ftxui::Color::Yellow));
+			table.SelectColumn(0).DecorateCells(ftxui::bold);
+		};
+
+		ui::render_table(basis_table, config::kTableMinWidth, transform_table);
 
 		fmt::print("\r\nBarycentrics' coefficients\r\n");
 		std::vector<std::vector<std::string>> bary_table{};
@@ -122,7 +128,7 @@ namespace detail {
 			bary_table[2].push_back(format_table_value(normalizer_i));
 			bary_table[3].push_back(format_table_value(value_i / normalizer_i));
 		}
-		ui::render_table(bary_table, config::kTableMinWidth);
+		ui::render_table(bary_table, config::kTableMinWidth, transform_table);
 	}
 } // namespace detail
 
@@ -144,10 +150,10 @@ namespace {
 auto display_Lagrange_interpolation(const RealList &nodes, const RealList &values) -> void {
 	const auto history = detail::build_Lagrange_interpolation_history(nodes, values);
 	detail::render_Lagrange_interpolation(nodes, history);
-	if(history.node_polys.empty()) {
-        fmt::print("Invalid Input\r\n");
-        return;
-    }
+	if (history.node_polys.empty()) {
+		fmt::print("Invalid Input\r\n");
+		return;
+	}
 
 	const auto poly = Lagrange_polynomial(history);
 	fmt::print("\r\nLagrange interpolated polynomials: L(x) = sum[i=0,{}]: y_i / D_i * C_i(x)",
