@@ -57,6 +57,9 @@ add_library(
 	src/chapter1/interpolation/polynomial/Bessel.cpp
 	src/chapter1/interpolation/interval.cpp
 	src/chapter1/interpolation/inverse.cpp
+	src/chapter1/spline/linear.cpp
+	src/chapter1/spline/quadratic.cpp
+	src/chapter1/spline/cubic.cpp
 )
 
 target_include_directories(
