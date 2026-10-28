@@ -56,6 +56,7 @@ add_library(
 	src/chapter1/interpolation/polynomial/Stirling.cpp
 	src/chapter1/interpolation/polynomial/Bessel.cpp
 	src/chapter1/interpolation/interval.cpp
+	src/chapter1/interpolation/inverse.cpp
 )
 
 target_include_directories(

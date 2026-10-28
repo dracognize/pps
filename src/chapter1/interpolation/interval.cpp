@@ -29,19 +29,22 @@ namespace {
 
 	auto select_range(SizeType center_index, SizeType point_count, SizeType node_count)
 		-> ExtractInterval {
-		SizeType first_index = center_index - (point_count - 1) / 2;
-		SizeType last_index	 = center_index + point_count / 2;
+		auto first_index = static_cast<std::ptrdiff_t>(center_index) -
+						   (static_cast<std::ptrdiff_t>(point_count) - 1) / 2;
+		auto last_index	 = static_cast<std::ptrdiff_t>(center_index) +
+						   static_cast<std::ptrdiff_t>(point_count) / 2;
 
-		if (first_index > center_index) {
-			last_index += first_index - center_index;
-			first_index = center_index;
+		if (first_index < 0) {
+			last_index += -first_index;
+			first_index = 0;
 		}
-		if (last_index >= node_count) {
-			first_index -= last_index - (node_count - 1);
-			last_index = node_count - 1;
+		const auto last_node_index = static_cast<std::ptrdiff_t>(node_count) - 1;
+		if (last_index > last_node_index) {
+			first_index -= last_index - last_node_index;
+			last_index = last_node_index;
 		}
 
-		return {first_index, last_index};
+		return {static_cast<SizeType>(first_index), static_cast<SizeType>(last_index)};
 	}
 
 } // namespace

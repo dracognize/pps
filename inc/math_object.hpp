@@ -79,6 +79,32 @@ struct EquidistantHistory {
 		PolynomialList node_polys;
 };
 
+/// @brief Inclusive range of selected indices.
+struct ExtractInterval {
+		SizeType start;
+		SizeType end;
+};
+
+/// @brief List of inclusive index ranges.
+using IntervalsList = std::vector<ExtractInterval>;
+
+/// @brief One inverse-interpolation calculation on an isolating interval.
+struct InverseInterpolationStep {
+		ExtractInterval isolating_interval;
+		ExtractInterval selected_interval;
+		RealList		inverse_nodes;
+		RealList		inverse_values;
+		Polynomial		inverse_polynomial;
+		Real			root = 0;
+};
+
+/// @brief Full history of inverse interpolation for a target value.
+struct InverseInterpolationHistory {
+		IntervalsList						  isolating_intervals;
+		std::vector<InverseInterpolationStep> steps;
+		RealList							  roots;
+};
+
 /// @cond INTERNAL
 template <typename Char>
 struct fmt::range_format_kind<Polynomial, Char>
