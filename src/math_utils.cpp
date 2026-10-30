@@ -2,6 +2,7 @@
 #include <math_object.hpp>
 
 #include <cmath>
+#include <utility>
 
 namespace utils {
 	auto factorial(SizeType k) -> Real {
@@ -36,6 +37,24 @@ namespace utils {
 		for (SizeType i = 0; i < poly.size(); ++i)
 			result[i * pow] = poly[i];
 
+		return result;
+	}
+
+	auto shift_polynomial(const Polynomial &poly, Real shift) -> Polynomial {
+		if (poly.empty())
+			return {};
+
+		// Horner composition with the linear polynomial (x - xk).
+		Polynomial result;
+		for (auto it = poly.rbegin(); it != poly.rend(); ++it) {
+			Polynomial next(result.size() + 1, 0.0);
+			for (SizeType i = 0; i < result.size(); ++i) {
+			next[i] -= shift * result[i];
+				next[i + 1] += result[i];
+			}
+			next[0] += *it;
+			result = std::move(next);
+		}
 		return result;
 	}
 } // namespace utils

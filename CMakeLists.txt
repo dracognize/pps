@@ -40,6 +40,27 @@ if(NOT fmt_FOUND)
 	FetchContent_MakeAvailable(fmt)
 endif()
 
+find_package(Eigen3 3.4 QUIET NO_MODULE)
+if(NOT Eigen3_FOUND)
+	set(EIGEN_BUILD_TESTING    OFF CACHE BOOL "" FORCE)
+	set(EIGEN_BUILD_DOC        OFF CACHE BOOL "" FORCE)
+	set(EIGEN_BUILD_PKGCONFIG  OFF CACHE BOOL "" FORCE)
+	set(BUILD_TESTING          OFF CACHE BOOL "" FORCE)
+	FetchContent_Declare(
+		eigen
+		GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+		GIT_TAG 3.4.0
+		GIT_SHALLOW TRUE
+	)
+	FetchContent_MakeAvailable(eigen)
+	if(NOT TARGET Eigen3::Eigen)
+		add_library(Eigen3::Eigen INTERFACE IMPORTED GLOBAL)
+		target_include_directories(Eigen3::Eigen INTERFACE
+			"${eigen_SOURCE_DIR}"
+		)
+	endif()
+endif()
+
 # Core math library: shared by the CLI and the Python module.
 add_library(
 	pps_lib
@@ -71,6 +92,7 @@ target_link_libraries(
 	pps_lib
 	PUBLIC ftxui::ftxui
 	PUBLIC fmt::fmt
+	PUBLIC Eigen3::Eigen
 )
 
 add_executable(

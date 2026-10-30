@@ -3,10 +3,13 @@
 /// @brief Core math types: scalars, polynomials, division results.
 
 #include <string_view>
+#include <string>
+#include <algorithm>
 #include <vector>
 
 #include <fmt/format.h>
 #include <fmt/ranges.h>
+#include <Eigen/Core>
 
 /// @brief Floating-point scalar used for every numerical value.
 using Real = double;
@@ -105,6 +108,13 @@ struct InverseInterpolationHistory {
 		RealList							  roots;
 };
 
+struct SplineFunction {
+		RealList	   nodes;
+		PolynomialList piecewise_poly;
+
+		auto value(const Real &key) -> Real;
+};
+
 /// @cond INTERNAL
 template <typename Char>
 struct fmt::range_format_kind<Polynomial, Char>
@@ -133,5 +143,64 @@ template <> struct fmt::formatter<Polynomial> {
 	private:
 		/// Indeterminate used when rendering; `x` unless overridden by the spec.
 		std::string_view var_{"x"};
+};
+/// @brief Formatter for piecewise spline polynomials, one interval per line.
+template <> struct fmt::formatter<SplineFunction> {
+		constexpr auto parse(fmt::format_parse_context &ctx) -> const char * {
+			auto it = ctx.begin();
+			if (it != ctx.end() && *it != '}')
+				throw fmt::format_error("SplineFunction formatter has no format specifiers");
+			return it;
+		}
+
+		auto format(const SplineFunction &spline, fmt::format_context &ctx) const
+			-> decltype(ctx.out());
+};
+
+/// @brief Formatter for Eigen matrices using a square-bracket matrix layout.
+template <typename Scalar, int Rows, int Cols, int Options, int MaxRows, int MaxCols>
+struct fmt::formatter<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>> {
+		constexpr auto parse(fmt::format_parse_context &ctx) -> const char * {
+			auto it = ctx.begin();
+			if (it != ctx.end() && *it != '}')
+				throw fmt::format_error("Eigen matrix formatter has no format specifiers");
+			return it;
+		}
+
+		auto format(const Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &matrix,
+				fmt::format_context &ctx) const -> decltype(ctx.out()) {
+			if (matrix.size() == 0)
+				return fmt::format_to(ctx.out(), "[]");
+
+			std::vector<std::vector<std::string>> values(
+				static_cast<SizeType>(matrix.rows()),
+				std::vector<std::string>(static_cast<SizeType>(matrix.cols())));
+			std::vector<SizeType> widths(static_cast<SizeType>(matrix.cols()), 0);
+			for (Eigen::Index row = 0; row < matrix.rows(); ++row) {
+				for (Eigen::Index col = 0; col < matrix.cols(); ++col) {
+					auto &value = values[static_cast<SizeType>(row)][static_cast<SizeType>(col)];
+					value = fmt::format("{}", matrix(row, col));
+					widths[static_cast<SizeType>(col)] =
+						std::max(widths[static_cast<SizeType>(col)], value.size());
+				}
+			}
+
+			auto out = ctx.out();
+			for (Eigen::Index row = 0; row < matrix.rows(); ++row) {
+				if (row != 0)
+					out = fmt::format_to(out, "\n");
+				out = fmt::format_to(out, "[");
+				for (Eigen::Index col = 0; col < matrix.cols(); ++col) {
+					if (col != 0)
+						out = fmt::format_to(out, " ");
+					out = fmt::format_to(out,
+										 "{:>{}}",
+									 values[static_cast<SizeType>(row)][static_cast<SizeType>(col)],
+									 widths[static_cast<SizeType>(col)]);
+				}
+				out = fmt::format_to(out, "]");
+			}
+			return out;
+		}
 };
 /// @endcond

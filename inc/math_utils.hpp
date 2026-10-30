@@ -19,4 +19,11 @@ namespace utils {
 	/// @param pow The number of times to compose.
 	/// @return The composed polynomial.
 	auto compose_power(const Polynomial &poly, SizeType pow) -> Polynomial;
+	/// @brief Shift a polynomial's argument by `shift`.
+	/// @details Computes `P(x - shift)` for ascending coefficients.
+	/// @param poly The polynomial `P(x)`.
+	/// @param shift The shift value.
+	/// @return The polynomial `P(x - shift)`.
+	auto shift_polynomial(const Polynomial &poly, Real shift) -> Polynomial;
+
 } // namespace utils
