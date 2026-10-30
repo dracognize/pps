@@ -2,14 +2,14 @@
 /// @file math_object.hpp
 /// @brief Core math types: scalars, polynomials, division results.
 
-#include <string_view>
-#include <string>
 #include <algorithm>
+#include <string>
+#include <string_view>
 #include <vector>
 
+#include <Eigen/Core>
 #include <fmt/format.h>
 #include <fmt/ranges.h>
-#include <Eigen/Core>
 
 /// @brief Floating-point scalar used for every numerical value.
 using Real = double;
@@ -115,6 +115,18 @@ struct SplineFunction {
 		auto value(const Real &key) -> Real;
 };
 
+/// @brief Intermediate data for constructing and displaying a spline.
+/// @details `derivatives` stores the derivatives of order `n - 1` for a degree-`n` spline.
+struct SplineHistory {
+		RealList		nodes;
+		RealList		values;
+		RealList		widths;
+		Eigen::MatrixXd system;
+		Eigen::VectorXd constants;
+		Eigen::VectorXd derivatives;
+		PolynomialList	piecewise_poly;
+};
+
 /// @cond INTERNAL
 template <typename Char>
 struct fmt::range_format_kind<Polynomial, Char>
@@ -168,7 +180,7 @@ struct fmt::formatter<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCol
 		}
 
 		auto format(const Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &matrix,
-				fmt::format_context &ctx) const -> decltype(ctx.out()) {
+					fmt::format_context &ctx) const -> decltype(ctx.out()) {
 			if (matrix.size() == 0)
 				return fmt::format_to(ctx.out(), "[]");
 
@@ -179,7 +191,7 @@ struct fmt::formatter<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCol
 			for (Eigen::Index row = 0; row < matrix.rows(); ++row) {
 				for (Eigen::Index col = 0; col < matrix.cols(); ++col) {
 					auto &value = values[static_cast<SizeType>(row)][static_cast<SizeType>(col)];
-					value = fmt::format("{}", matrix(row, col));
+					value		= fmt::format("{}", matrix(row, col));
 					widths[static_cast<SizeType>(col)] =
 						std::max(widths[static_cast<SizeType>(col)], value.size());
 				}
@@ -193,10 +205,11 @@ struct fmt::formatter<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCol
 				for (Eigen::Index col = 0; col < matrix.cols(); ++col) {
 					if (col != 0)
 						out = fmt::format_to(out, " ");
-					out = fmt::format_to(out,
-										 "{:>{}}",
-									 values[static_cast<SizeType>(row)][static_cast<SizeType>(col)],
-									 widths[static_cast<SizeType>(col)]);
+					out = fmt::format_to(
+						out,
+						"{:>{}}",
+						values[static_cast<SizeType>(row)][static_cast<SizeType>(col)],
+						widths[static_cast<SizeType>(col)]);
 				}
 				out = fmt::format_to(out, "]");
 			}
