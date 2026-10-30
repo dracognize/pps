@@ -81,6 +81,7 @@ add_library(
 	src/chapter1/spline/linear.cpp
 	src/chapter1/spline/quadratic.cpp
 	src/chapter1/spline/cubic.cpp
+	src/chapter1/lsp.cpp
 )
 
 target_include_directories(

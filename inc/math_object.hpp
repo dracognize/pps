@@ -3,6 +3,7 @@
 /// @brief Core math types: scalars, polynomials, division results.
 
 #include <algorithm>
+#include <functional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -20,6 +21,9 @@ using SizeType = std::size_t;
 using RealList = std::vector<Real>;
 /// @brief 2D table of reals (list of rows).
 using RealTable = std::vector<RealList>;
+
+/// @brief List of functions.
+using FunctionsList = std::vector<std::function<Real(Real)>>;
 
 /// @brief Polynomial in ascending coefficient order.
 /// @details `poly[i]` is the coefficient of `x^i`. Empty means zero.
