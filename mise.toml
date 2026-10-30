@@ -29,6 +29,10 @@ run = "cmake --build build"
 description = "Remove the build tree"
 run = "cmake -E remove_directory build"
 
+[tasks.reconfigure]
+description = "Wipe only CMakeCache + CMakeFiles (keeps _deps) then re-configure"
+run = "python scripts/reconfigure.py"
+
 [tasks.docs]
 description = "Build the mdBook docs (build/docs/index.html)"
 depends = ["bootstrap-docs"]

@@ -18,9 +18,12 @@ PointerAlignment: Right
 ReferenceAlignment: Right
 
 BinPackArguments: false
-BinPackParameters: false
+BinPackParameters: OnePerLine
 
-SortIncludes: true
+SortIncludes:
+    Enabled: true
+    IgnoreCase: false
+    IgnoreExtension: false
 IncludeBlocks: Preserve
 
 AlignConsecutiveAssignments:
