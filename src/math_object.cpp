@@ -49,7 +49,7 @@ auto Polynomial::operator*(const Polynomial &other) const -> Polynomial {
 	return result;
 }
 
-auto SplineFunction::value(const Real &key) -> Real {
+auto SplineFunction::value(const Real &key) const -> Real {
 	if (key < nodes.front() || key > nodes.back())
 		throw std::out_of_range("SplineFunction evaluation point is outside the node range");
 

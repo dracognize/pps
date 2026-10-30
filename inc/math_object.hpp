@@ -116,7 +116,7 @@ struct SplineFunction {
 		RealList	   nodes;
 		PolynomialList piecewise_poly;
 
-		auto value(const Real &key) -> Real;
+		auto value(const Real &key) const -> Real;
 };
 
 /// @brief Intermediate data for constructing and displaying a spline.

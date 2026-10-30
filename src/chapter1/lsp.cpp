@@ -79,7 +79,7 @@ namespace detail {
 } // namespace detail
 
 auto display_linear_lsp(const RealList &nodes, const RealList &values) -> void {
-	ui::DisplayFrame display_frame;
+	ui::DisplayFrame	display_frame;
 	const FunctionsList basis = {
 		[](Real x) { return x; },
 		[](Real) { return 1.0; },
@@ -90,16 +90,15 @@ auto display_linear_lsp(const RealList &nodes, const RealList &values) -> void {
 	for (SizeType i = 0; i < coeffs.size(); ++i)
 		coeffs_matrix(static_cast<Eigen::Index>(i), 0) = coeffs[i];
 
-	fmt::print("Linear least-squares design matrix Phi:\n");
+	fmt::print("Linear least-squares design matrix Φ:\n");
 	print_matrix_box(design);
-	fmt::print(
-		"\nLinear least-squares coefficient matrix [a b]^T = (Phi^T * Phi)^(-1) * Phi^T * y\n");
+	fmt::print("\nLinear least-squares coefficient matrix [a b]^T = (Φ^T * Φ)^(-1) * Φ^T * y\n");
 	print_matrix_box(coeffs_matrix);
 	fmt::print("\nApproximation funciton F(x) = {}\n", Polynomial({coeffs[1], coeffs[0]}));
 }
 
 auto display_quadratic_lsp(const RealList &nodes, const RealList &values) -> void {
-	ui::DisplayFrame display_frame;
+	ui::DisplayFrame	display_frame;
 	const FunctionsList basis = {
 		[](Real x) { return x * x; },
 		[](Real x) { return x; },
@@ -112,10 +111,10 @@ auto display_quadratic_lsp(const RealList &nodes, const RealList &values) -> voi
 	for (SizeType i = 0; i < coeffs.size(); ++i)
 		coeffs_matrix(static_cast<Eigen::Index>(i), 0) = coeffs[i];
 
-	fmt::print("Quadratic least-squares design matrix Phi:\n");
+	fmt::print("Quadratic least-squares design matrix Φ:\n");
 	print_matrix_box(design);
-	fmt::print("\nQuadratic least-squares coefficient matrix [a b c]^T = (Phi^T * Phi)^(-1) * "
-			   "Phi^T * y\n:\n");
+	fmt::print("\nQuadratic least-squares coefficient matrix [a b c]^T = (Φ^T * Φ)^(-1) * "
+			   "Φ^T * y\n:\n");
 	print_matrix_box(coeffs_matrix);
 	fmt::print("\nApproximation function F(x) = {}\n",
 			   Polynomial({coeffs[2], coeffs[1], coeffs[0]}));
@@ -123,14 +122,14 @@ auto display_quadratic_lsp(const RealList &nodes, const RealList &values) -> voi
 
 auto display_general_lsp(const RealList &nodes, const RealList &values, const FunctionsList &basis)
 	-> void {
-	ui::DisplayFrame display_frame;
+	ui::DisplayFrame	  display_frame;
 	const Eigen::MatrixXd design = detail::find_design_matrix(nodes, basis);
 	const RealList		  coeffs = detail::find_approximation_coefficients(nodes, values, basis);
 	Eigen::MatrixXd		  coeffs_matrix(static_cast<Eigen::Index>(coeffs.size()), 1);
 	for (SizeType i = 0; i < coeffs.size(); ++i)
 		coeffs_matrix(static_cast<Eigen::Index>(i), 0) = coeffs[i];
 
-	fmt::print("General least-squares design matrix Phi:\n");
+	fmt::print("General least-squares design matrix Φ:\n");
 	print_matrix_box(design);
 	fmt::print("\nGeneral least-squares coefficient matrix [alpha_i]^T:\n");
 	print_matrix_box(coeffs_matrix);
@@ -140,7 +139,7 @@ auto display_general_lsp(const RealList &nodes, const RealList &values, const Fu
 		if (i != 0)
 			approximation += " + ";
 		approximation += fmt::format(
-			"{}*phi_{}(x)", fmt::format("{:.{}g}", coeffs[i], config::kDisplayPrecision), i);
+			"{}*Φ_{}(x)", fmt::format("{:.{}g}", coeffs[i], config::kDisplayPrecision), i);
 	}
 	fmt::print("\nApproximation function: {}\n", approximation);
 }
