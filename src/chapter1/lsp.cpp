@@ -1,4 +1,5 @@
 #include <chapter1/lsp.hpp>
+#include <io/output_handling.hpp>
 
 #include <Eigen/LU>
 #include <config.hpp>
@@ -78,6 +79,7 @@ namespace detail {
 } // namespace detail
 
 auto display_linear_lsp(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const FunctionsList basis = {
 		[](Real x) { return x; },
 		[](Real) { return 1.0; },
@@ -97,6 +99,7 @@ auto display_linear_lsp(const RealList &nodes, const RealList &values) -> void {
 }
 
 auto display_quadratic_lsp(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const FunctionsList basis = {
 		[](Real x) { return x * x; },
 		[](Real x) { return x; },
@@ -120,6 +123,7 @@ auto display_quadratic_lsp(const RealList &nodes, const RealList &values) -> voi
 
 auto display_general_lsp(const RealList &nodes, const RealList &values, const FunctionsList &basis)
 	-> void {
+	ui::DisplayFrame display_frame;
 	const Eigen::MatrixXd design = detail::find_design_matrix(nodes, basis);
 	const RealList		  coeffs = detail::find_approximation_coefficients(nodes, values, basis);
 	Eigen::MatrixXd		  coeffs_matrix(static_cast<Eigen::Index>(coeffs.size()), 1);

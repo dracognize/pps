@@ -7,4 +7,5 @@
 - [Core types](api/math.md)
 - [Horner scheme](api/horner.md)
 - [Interpolation](api/interpolation.md)
+- [Piecewise linear spline](api/spline.md)
 - [Tables](api/table.md)

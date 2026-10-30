@@ -1,7 +1,7 @@
 #include <chapter1/interpolation/horner.hpp>
+#include <io/output_handling.hpp>
 #include <chapter1/interpolation/polynomial/Newton.hpp>
 #include <config.hpp>
-#include <io/table.hpp>
 #include <math_object.hpp>
 #include <math_utils.hpp>
 
@@ -578,6 +578,7 @@ namespace {
 } // namespace
 
 auto display_Newton_general_forward(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const auto history = detail::build_Newton_general_forward_history(nodes, values);
 	if (history.divided_diffs.empty()) {
 		fmt::print("Invalid Input\r\n");
@@ -593,6 +594,7 @@ auto display_Newton_general_forward(const RealList &nodes, const RealList &value
 }
 
 auto display_Newton_general_backward(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const auto history = detail::build_Newton_general_backward_history(nodes, values);
 	if (history.divided_diffs.empty()) {
 		fmt::print("Invalid Input\r\n");
@@ -609,6 +611,7 @@ auto display_Newton_general_backward(const RealList &nodes, const RealList &valu
 }
 
 auto display_Newton_equidistant_forward(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const auto history = detail::build_Newton_equidistant_forward_history(nodes, values);
 	if (history.finite_diffs.empty()) {
 		fmt::print("Invalid Input\r\n");
@@ -630,6 +633,7 @@ auto display_Newton_equidistant_forward(const RealList &nodes, const RealList &v
 }
 
 auto display_Newton_equidistant_backward(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const auto history = detail::build_Newton_equidistant_backward_history(nodes, values);
 	if (history.finite_diffs.empty()) {
 		fmt::print("Invalid Input\r\n");

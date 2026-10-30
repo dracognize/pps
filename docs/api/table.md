@@ -1,6 +1,6 @@
 # Tables
 
-Defined in `inc/ui/table.hpp`.
+Defined in `inc/io/output_handling.hpp`.
 
 ## render_table
 

@@ -1,7 +1,7 @@
 #include <chapter1/spline/quadratic.hpp>
+#include <io/output_handling.hpp>
 
 #include <config.hpp>
-#include <io/table.hpp>
 
 #include <Eigen/LU>
 #include <fmt/format.h>
@@ -165,6 +165,7 @@ namespace detail {
 
 auto display_quadratic_spline(
 	const RealList &nodes, const RealList &values, Real alpha, Real beta, Real gamma) -> void {
+	ui::DisplayFrame display_frame;
 
 	const auto history = detail::build_quadratic_spline_history(nodes, values, alpha, beta, gamma);
 	detail::render_quadratic_spline(history);

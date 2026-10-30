@@ -1,10 +1,10 @@
 #include <chapter1/interpolation/horner.hpp>
+#include <io/output_handling.hpp>
 #include <chapter1/interpolation/interval.hpp>
 #include <chapter1/interpolation/inverse.hpp>
 #include <chapter1/interpolation/polynomial/Lagrange.hpp>
 #include <chapter1/interpolation/polynomial/Newton.hpp>
 #include <config.hpp>
-#include <io/table.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -175,6 +175,7 @@ auto display_inverse_interpolation(const RealList	  &nodes,
 								   Real				   target_value,
 								   SizeType			   max_points,
 								   InterpolationMethod method) -> void {
+	ui::DisplayFrame display_frame;
 	const InverseInterpolationHistory history = detail::build_inverse_interpolation_history(
 		nodes, values, target_value, max_points, method);
 	detail::render_inverse_interpolation_history(nodes, values, target_value, history);

@@ -1,7 +1,7 @@
 #include <chapter1/interpolation/horner.hpp>
+#include <io/output_handling.hpp>
 #include <chapter1/interpolation/polynomial/Gauss.hpp>
 #include <config.hpp>
-#include <io/table.hpp>
 #include <math_object.hpp>
 #include <math_utils.hpp>
 
@@ -360,6 +360,7 @@ namespace {
 } // namespace
 
 auto display_GaussI_interpolation(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const auto history = detail::build_GaussI_history(nodes, values);
 	if (history.finite_diffs.empty()) {
 		fmt::print("Invalid Input\r\n");
@@ -382,6 +383,7 @@ auto display_GaussI_interpolation(const RealList &nodes, const RealList &values)
 }
 
 auto display_GaussII_interpolation(const RealList &nodes, const RealList &values) -> void {
+	ui::DisplayFrame display_frame;
 	const auto history = detail::build_GaussII_history(nodes, values);
 	if (history.finite_diffs.empty()) {
 		fmt::print("Invalid Input\r\n");

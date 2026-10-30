@@ -1,7 +1,7 @@
 #include <chapter1/spline/cubic.hpp>
+#include <io/output_handling.hpp>
 
 #include <config.hpp>
-#include <io/table.hpp>
 
 #include <Eigen/LU>
 #include <fmt/format.h>
@@ -176,6 +176,7 @@ namespace detail {
 auto display_cubic_spline(const RealList					&nodes,
 						  const RealList					&values,
 						  const Eigen::Matrix<double, 2, 5> &boundary_conditions) -> void {
+	ui::DisplayFrame display_frame;
 	const auto history = detail::build_cubic_spline_history(nodes, values, boundary_conditions);
 	detail::render_cubic_spline(history);
 	SplineFunction spline = detail::calculate_cubic_spline(history);

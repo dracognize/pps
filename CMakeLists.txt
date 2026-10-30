@@ -67,8 +67,8 @@ add_library(
 	STATIC
 	src/math_object.cpp
 	src/math_utils.cpp
-	src/io/table.cpp
 	src/io/input_handling.cpp
+	src/io/output_handling.cpp
 	src/chapter1/interpolation/optimal.cpp
 	src/chapter1/interpolation/horner.cpp
 	src/chapter1/interpolation/polynomial/Lagrange.cpp
