@@ -1,6 +1,6 @@
 #include <chapter1/interpolation/interval.hpp>
-#include <io/output_handling.hpp>
 #include <config.hpp>
+#include <io/output_handling.hpp>
 
 #include <cmath>
 #include <string>
@@ -179,21 +179,21 @@ auto display_equidistant_interpolation_points(const RealList &nodes,
 											  const RealList &values,
 											  Real			  x,
 											  SizeType		  point_count) -> void {
-	ui::DisplayFrame display_frame;
+	ui::DisplayFrame	  display_frame;
 	const ExtractInterval interval =
 		detail::select_equidistant_interpolation_points(nodes, values, x, point_count);
 	detail::render_selection_points(nodes, values, interval);
 }
 
 auto display_monotonic_intervals(const RealList &nodes, const RealList &values) -> void {
-	ui::DisplayFrame display_frame;
+	ui::DisplayFrame	display_frame;
 	const IntervalsList intervals = detail::find_monotonic_intervals(values);
 	detail::render_value_intervals(nodes, intervals, "Monotonic intervals");
 }
 
 auto display_isolating_intervals(const RealList &nodes, const RealList &values, Real target_value)
 	-> void {
-	ui::DisplayFrame display_frame;
+	ui::DisplayFrame	display_frame;
 	const IntervalsList intervals = detail::find_isolating_intervals(values, target_value);
 	detail::render_value_intervals(nodes, intervals, "Isolating intervals");
 }

@@ -21,15 +21,15 @@ namespace ui {
 	}
 
 	auto render_table(const std::vector<std::vector<std::string>> &rows,
-					  int min_width,
-					  std::function<void(ftxui::Table &)> transform) -> void {
+					  int										   min_width,
+					  std::function<void(ftxui::Table &)>		   transform) -> void {
 		using namespace ftxui;
 		if (rows.empty())
 			return;
 
 #ifdef _WIN32
 		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		DWORD original_mode;
+		DWORD  original_mode;
 		GetConsoleMode(hOut, &original_mode);
 #endif
 		auto table = Table(rows);
@@ -43,7 +43,7 @@ namespace ui {
 		transform(table);
 
 		auto document = table.Render();
-		auto screen = Screen::Create(Dimension::Fit(document, true));
+		auto screen	  = Screen::Create(Dimension::Fit(document, true));
 		Render(screen, document);
 		screen.Print();
 #ifdef _WIN32

@@ -132,7 +132,7 @@ struct SplineHistory {
 };
 
 /// @brief History of iterative inverse interpolation.
-struct InverseInterpolationIterativeHistory {
+struct InverseIterationHistory {
 		IntervalsList	  isolating_intervals; ///< Isolating intervals [p_i, p_i + 1].
 		std::vector<bool> is_forward; ///< True if Newton forward was used, false for backward.
 		RealTable		  interpolation_nodes;	///< Interpolation nodes used for each interval.
@@ -144,7 +144,6 @@ struct InverseInterpolationIterativeHistory {
 		RealList interval_roots;   ///< Root found in each isolating interval.
 		RealList roots;			   ///< All distinct roots found.
 };
-
 /// @cond INTERNAL
 template <typename Char>
 struct fmt::range_format_kind<Polynomial, Char>

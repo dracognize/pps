@@ -49,7 +49,7 @@ namespace utils {
 		for (auto it = poly.rbegin(); it != poly.rend(); ++it) {
 			Polynomial next(result.size() + 1, 0.0);
 			for (SizeType i = 0; i < result.size(); ++i) {
-			next[i] -= shift * result[i];
+				next[i] -= shift * result[i];
 				next[i + 1] += result[i];
 			}
 			next[0] += *it;

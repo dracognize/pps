@@ -1,7 +1,7 @@
 #include <chapter1/interpolation/horner.hpp>
-#include <io/output_handling.hpp>
 #include <chapter1/interpolation/polynomial/Lagrange.hpp>
 #include <config.hpp>
+#include <io/output_handling.hpp>
 #include <math_object.hpp>
 
 #include <fmt/format.h>
@@ -149,7 +149,7 @@ namespace {
 
 auto display_Lagrange_interpolation(const RealList &nodes, const RealList &values) -> void {
 	ui::DisplayFrame display_frame;
-	const auto history = detail::build_Lagrange_interpolation_history(nodes, values);
+	const auto		 history = detail::build_Lagrange_interpolation_history(nodes, values);
 	detail::render_Lagrange_interpolation(nodes, history);
 	if (history.node_polys.empty()) {
 		fmt::print("Invalid Input\r\n");

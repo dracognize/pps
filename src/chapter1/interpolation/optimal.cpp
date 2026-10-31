@@ -1,6 +1,6 @@
 #include <chapter1/interpolation/optimal.hpp>
-#include <io/output_handling.hpp>
 #include <config.hpp>
+#include <io/output_handling.hpp>
 #include <math_object.hpp>
 
 #include <cmath>
@@ -56,6 +56,6 @@ namespace detail {
 
 auto display_chebyshev_nodes(Real lower, Real upper, SizeType num_nodes) -> void {
 	ui::DisplayFrame display_frame;
-	const auto nodes = detail::generate_chebyshev_nodes(lower, upper, num_nodes);
+	const auto		 nodes = detail::generate_chebyshev_nodes(lower, upper, num_nodes);
 	detail::render_nodes_table(nodes);
 }

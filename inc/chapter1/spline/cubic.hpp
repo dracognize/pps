@@ -12,8 +12,8 @@ namespace detail {
 	/// @param values Function values corresponding to `nodes`.
 	/// @param boundary_conditions Two augmented boundary-condition rows.
 	/// @return History containing the system, solution, widths, and interval polynomials.
-	auto build_cubic_spline_history(const RealList &nodes,
-									const RealList &values,
+	auto build_cubic_spline_history(const RealList					  &nodes,
+									const RealList					  &values,
 									const Eigen::Matrix<double, 2, 5> &boundary_conditions)
 		-> SplineHistory;
 	/// @brief Construct the piecewise cubic spline.
@@ -21,9 +21,10 @@ namespace detail {
 	/// @param values Function values corresponding to `nodes`.
 	/// @param boundary_conditions Two augmented boundary-condition rows.
 	/// @return Piecewise cubic spline in local powers of `(x - nodes[i])`.
-	auto find_cubic_spline(const RealList &nodes,
-						const RealList &values,
-						const Eigen::Matrix<double, 2, 5> &boundary_conditions) -> SplineFunction;
+	auto find_cubic_spline(const RealList					 &nodes,
+						   const RealList					 &values,
+						   const Eigen::Matrix<double, 2, 5> &boundary_conditions)
+		-> SplineFunction;
 	/// @brief Display the augmented system, nodal second derivatives, and coefficients.
 	/// @param history Cubic spline history produced by `build_cubic_spline_history`.
 	auto render_cubic_spline(const SplineHistory &history) -> void;
@@ -33,6 +34,6 @@ namespace detail {
 /// @param nodes Spline nodes.
 /// @param values Function values corresponding to `nodes`.
 /// @param boundary_conditions Two augmented boundary-condition rows.
-auto display_cubic_spline(const RealList &nodes,
-						  const RealList &values,
+auto display_cubic_spline(const RealList					&nodes,
+						  const RealList					&values,
 						  const Eigen::Matrix<double, 2, 5> &boundary_conditions) -> void;

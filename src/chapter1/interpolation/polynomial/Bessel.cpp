@@ -1,7 +1,7 @@
 #include <chapter1/interpolation/horner.hpp>
-#include <io/output_handling.hpp>
 #include <chapter1/interpolation/polynomial/Bessel.hpp>
 #include <config.hpp>
+#include <io/output_handling.hpp>
 #include <math_object.hpp>
 #include <math_utils.hpp>
 
@@ -208,7 +208,7 @@ namespace {
 
 auto display_Bessel_interpolation(const RealList &nodes, const RealList &values) -> void {
 	ui::DisplayFrame display_frame;
-	const auto history = detail::build_Bessel_history(nodes, values);
+	const auto		 history = detail::build_Bessel_history(nodes, values);
 	if (history.finite_diffs.empty()) {
 		fmt::print("Invalid Input\r\n");
 		return;

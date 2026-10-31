@@ -74,7 +74,7 @@ namespace detail {
 } // namespace detail
 
 auto display_linear_spline(const RealList &nodes, const RealList &values) -> void {
-	ui::DisplayFrame display_frame;
+	ui::DisplayFrame	 display_frame;
 	const SplineFunction spline = detail::find_linear_spline(nodes, values);
 	detail::render_linear_spline(spline);
 }

@@ -32,19 +32,6 @@ namespace detail {
 
 } // namespace detail
 
-/// @brief History of iterative inverse interpolation.
-struct InverseIterationHistory {
-	IntervalsList		   isolating_intervals;	 ///< Isolating intervals [p_i, p_i + 1].
-	std::vector<bool>	   is_forward;			 ///< True if Newton forward was used, false for backward.
-	RealTable			   interpolation_nodes;	 ///< Interpolation nodes used for each interval.
-	RealTable			   interpolation_values; ///< Interpolation values used for each interval.
-	PolynomialList		   polynomials;			 ///< Interpolation polynomials P_i(t).
-	PolynomialList		   phi_functions;		 ///< Iteration functions phi(t).
-	std::vector<RealTable> iteration_tables;	 ///< Iteration rows [iter, t_0, t, delta] for each interval.
-	RealList			   interval_roots;		 ///< Root found in each isolating interval.
-	RealList			   roots;				 ///< All distinct roots found.
-};
-
 namespace detail {
 
 	/// @brief Find roots using iterative inverse interpolation.
@@ -71,8 +58,7 @@ namespace detail {
 										 const RealList &values,
 										 Real			 target_value,
 										 Real			 tolerance,
-										 SizeType		 max_points)
-		-> InverseIterationHistory;
+										 SizeType		 max_points) -> InverseIterationHistory;
 
 	/// @brief Render iterative inverse interpolation history.
 	/// @param nodes Independent-variable samples.
@@ -80,11 +66,10 @@ namespace detail {
 	/// @param target_value Target function value \bar{y}.
 	/// @param tolerance Error tolerance \varepsilon.
 	/// @param history Precomputed iterative history.
-	auto render_inverse_iteration_history(
-		const RealList				  &nodes,
-		const RealList				  &values,
-		Real						   target_value,
-		const InverseIterationHistory &history) -> void;
+	auto render_inverse_iteration_history(const RealList				&nodes,
+										  const RealList				&values,
+										  Real							 target_value,
+										  const InverseIterationHistory &history) -> void;
 
 } // namespace detail
 

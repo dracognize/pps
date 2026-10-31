@@ -1,6 +1,6 @@
 #include <chapter1/interpolation/horner.hpp>
-#include <io/output_handling.hpp>
 #include <config.hpp>
+#include <io/output_handling.hpp>
 #include <math_object.hpp>
 #include <math_utils.hpp>
 
@@ -278,13 +278,13 @@ namespace detail {
 
 auto display_polynomial_evaluation(Real x, const Polynomial &poly) -> void {
 	ui::DisplayFrame display_frame;
-	const Real value = detail::evaluate_polynomial(x, poly);
+	const Real		 value = detail::evaluate_polynomial(x, poly);
 	detail::print_polynomial_evaluation(x, poly, value);
 }
 
 auto display_horner_division(const Polynomial &a, const Polynomial &b) -> void {
 	ui::DisplayFrame display_frame;
-	const auto division = detail::divide_by_linear(a, b);
+	const auto		 division = detail::divide_by_linear(a, b);
 	detail::print_horner_division(a, b, division);
 }
 
@@ -344,7 +344,7 @@ auto display_kth_derivative(Real c, const Polynomial &poly, SizeType k) -> void 
 
 auto display_horner_multiplication(const Polynomial &a, const Polynomial &b) -> void {
 	ui::DisplayFrame display_frame;
-	const auto product = detail::multiply_by_linear(a, b);
+	const auto		 product = detail::multiply_by_linear(a, b);
 	detail::print_horner_multiplication(a, b, product);
 }
 

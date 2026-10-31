@@ -15,7 +15,7 @@ namespace ui {
 	/// @param transform Optional table decorations applied before rendering.
 	auto render_table(
 		const std::vector<std::vector<std::string>> &rows,
-		int min_width,
+		int											 min_width,
 		std::function<void(ftxui::Table &)> transform = [](ftxui::Table &) -> void {}) -> void;
 
 	/// @brief Coordinate in an FTXUI table, expressed as column and row.
@@ -26,7 +26,7 @@ namespace ui {
 
 	/// @brief Prints a long separator before a display operation.
 	struct DisplayFrame {
-		DisplayFrame();
-		~DisplayFrame();
+			DisplayFrame();
+			~DisplayFrame();
 	};
 } // namespace ui

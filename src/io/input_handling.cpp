@@ -12,12 +12,12 @@ namespace ih {
 			if (!input)
 				throw std::runtime_error("Unable to open data file: " + path);
 
-			RealList result;
+			RealList	result;
 			std::string token;
 			while (input >> token) {
 				try {
-					size_t parsed_chars = 0;
-					const Real value = std::stod(token, &parsed_chars);
+					size_t	   parsed_chars = 0;
+					const Real value		= std::stod(token, &parsed_chars);
 					if (parsed_chars != token.size())
 						throw std::runtime_error("Invalid numeric token");
 					result.push_back(value);
@@ -33,8 +33,8 @@ namespace ih {
 	} // namespace
 
 	auto nodes_input(RealList &nodes) -> void {
-		RealList loaded_nodes  = read_real_list("datas/data_points/nodes.txt");
-		nodes  = std::move(loaded_nodes);
+		RealList loaded_nodes = read_real_list("datas/data_points/nodes.txt");
+		nodes				  = std::move(loaded_nodes);
 	}
 
 	auto data_point_input(RealList &nodes, RealList &values) -> void {

@@ -3,7 +3,6 @@
 /// @brief Piecewise quadratic spline construction and display.
 
 #include <math_object.hpp>
-#include <Eigen/Core>
 
 namespace detail {
 	/// @brief Construct a C1 quadratic spline through the supplied data points.
@@ -14,13 +13,16 @@ namespace detail {
 	/// @return A piecewise quadratic spline passing through every supplied point.
 	/// @throws std::invalid_argument if there are fewer than two points, the input
 	///         sizes differ, or the nodes are not strictly increasing.
-	auto build_quadratic_spline_history(const RealList &nodes, const RealList &values,
-										Real alpha, Real beta, Real gamma) -> SplineHistory;
+	auto build_quadratic_spline_history(const RealList &nodes,
+										const RealList &values,
+										Real			alpha,
+										Real			beta,
+										Real			gamma) -> SplineHistory;
 	auto find_quadratic_spline(const RealList &nodes,
-								const RealList &values,
-								Real alpha,
-								Real beta,
-								Real gamma) -> SplineFunction;
+							   const RealList &values,
+							   Real			   alpha,
+							   Real			   beta,
+							   Real			   gamma) -> SplineFunction;
 
 	/// @brief Render the interval and coefficients of each quadratic segment.
 	/// @param spline Piecewise quadratic spline returned by `find_quadratic_spline`.

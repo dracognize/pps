@@ -183,9 +183,9 @@ namespace detail {
 										 Real			 tolerance,
 										 SizeType		 max_points) -> InverseIterationHistory {
 		InverseIterationHistory history;
-		const bool invalid = nodes.size() != values.size() || nodes.size() < 2 ||
-							 max_points < 2 || tolerance <= 0 ||
-							 !std::isfinite(target_value) || !std::isfinite(tolerance);
+		const bool invalid = nodes.size() != values.size() || nodes.size() < 2 || max_points < 2 ||
+							 tolerance <= 0 || !std::isfinite(target_value) ||
+							 !std::isfinite(tolerance);
 		if (invalid)
 			return history;
 
@@ -224,12 +224,11 @@ namespace detail {
 
 			if (is_fwd) {
 				const SizeType k = std::min(n - p_i, max_points - 1);
-				sel_nodes		 = RealList(nodes.begin() + static_cast<std::ptrdiff_t>(p_i),
-									nodes.begin() + static_cast<std::ptrdiff_t>(p_i + k + 1));
-				sel_values =
-					RealList(values.begin() + static_cast<std::ptrdiff_t>(p_i),
-							 values.begin() + static_cast<std::ptrdiff_t>(p_i + k + 1));
-				poly = Newton_equidistant_forward_polynomial(sel_nodes, sel_values);
+				sel_nodes  = RealList(nodes.begin() + static_cast<std::ptrdiff_t>(p_i),
+									  nodes.begin() + static_cast<std::ptrdiff_t>(p_i + k + 1));
+				sel_values = RealList(values.begin() + static_cast<std::ptrdiff_t>(p_i),
+									  values.begin() + static_cast<std::ptrdiff_t>(p_i + k + 1));
+				poly	   = Newton_equidistant_forward_polynomial(sel_nodes, sel_values);
 			} else {
 				const SizeType k		 = std::min(p_i + 1, max_points - 1);
 				const SizeType start_idx = p_i + 1 - k;
@@ -265,10 +264,10 @@ namespace detail {
 				phi.pop_back();
 			}
 
-			Real		   t_prev	 = t0;
-			Real		   t_curr	 = t0;
-			Real		   delta	 = 0.0;
-			const SizeType kMaxIter	 = 1000;
+			Real		   t_prev	= t0;
+			Real		   t_curr	= t0;
+			Real		   delta	= 0.0;
+			const SizeType kMaxIter = 1000;
 			RealTable	   iter_rows;
 
 			for (SizeType k = 1; k <= kMaxIter; ++k) {
@@ -301,9 +300,9 @@ namespace detail {
 		return history;
 	}
 
-	auto render_inverse_iteration_history(const RealList				  &nodes,
-										  const RealList				  &values,
-										  Real							   target_value,
+	auto render_inverse_iteration_history(const RealList				&nodes,
+										  const RealList				&values,
+										  Real							 target_value,
 										  const InverseIterationHistory &history) -> void {
 		if (nodes.empty() || nodes.size() != values.size())
 			return;
@@ -317,8 +316,7 @@ namespace detail {
 
 		fmt::println(
 			"Isolating intervals for ȳ = {:.{}g}:", target_value, config::kDisplayPrecision);
-		std::vector<std::vector<std::string>> itv_rows{
-			{"p_i", "[x_i, x_(i+1)]", "[y_i, y_(i+1)]"}};
+		std::vector<std::vector<std::string>> itv_rows{{"p_i", "[x_i, x_(i+1)]", "[y_i, y_(i+1)]"}};
 		for (SizeType i = 0; i < history.isolating_intervals.size(); ++i) {
 			const SizeType p_i = history.isolating_intervals[i].start;
 			itv_rows.push_back({
@@ -453,8 +451,8 @@ auto display_inverse_iteration(const RealList &nodes,
 							   Real			   tolerance,
 							   SizeType		   max_points) -> void {
 	ui::DisplayFrame display_frame;
-	const auto		 history = detail::build_inverse_iteration_history(
-		nodes, values, target_value, tolerance, max_points);
+	const auto		 history =
+		detail::build_inverse_iteration_history(nodes, values, target_value, tolerance, max_points);
 	if (history.isolating_intervals.empty() && history.roots.empty()) {
 		fmt::println("Invalid Input");
 		return;
