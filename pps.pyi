@@ -88,6 +88,16 @@ class _DetailModule:
     ) -> float:
         """``P^{(k)}(c)`` via repeated Horner division; ``0`` when ``k > deg(P)``."""
         ...
+    def multiply_by_linear(
+        self,
+        a: Polynomial | list[float],
+        b: Polynomial | list[float],
+    ) -> Polynomial:
+        """Multiply ``a`` by degree-1 ``b``."""
+        ...
+    def node_polynomial(self, nodes: list[float]) -> Polynomial:
+        """Build the node polynomial omega_{n+1}(x)."""
+        ...
 
     # ---- Lagrange ----
     def Lagrange_polynomial(
@@ -253,6 +263,21 @@ def display_chebyshev_nodes(lower: float, upper: float, num_nodes: int) -> None:
 
 def display_kth_derivative(c: float, poly: Polynomial | list[float], k: int) -> None:
     """Render the generalized Horner tableau plus ``P^{(k)}(c) = k! * R``."""
+    ...
+
+def display_horner_multiplication(
+    a: Polynomial | list[float],
+    b: Polynomial | list[float],
+) -> None:
+    """Print the result of Horner multiplication."""
+    ...
+
+def display_nodes_polynomial_table(
+    nodes: list[float],
+    var: str = "x",
+    pow: int = 1,
+) -> None:
+    """Render the table of node polynomials."""
     ...
 
 # ---- Interpolation display ----
