@@ -32,6 +32,11 @@ namespace ih {
 		}
 	} // namespace
 
+	auto nodes_input(RealList &nodes) -> void {
+		RealList loaded_nodes  = read_real_list("datas/data_points/nodes.txt");
+		nodes  = std::move(loaded_nodes);
+	}
+
 	auto data_point_input(RealList &nodes, RealList &values) -> void {
 		RealList loaded_nodes  = read_real_list("datas/data_points/nodes.txt");
 		RealList loaded_values = read_real_list("datas/data_points/values.txt");

@@ -5,6 +5,12 @@
 #include <math_object.hpp>
 
 namespace ih {
+	/// @brief Read sample nodes from the data-point files.
+	/// @details Reads whitespace-separated real numbers from
+	///          `datas/data_points/nodes.txt`
+	/// @param nodes Receives the values from `nodes.txt`.
+	auto nodes_input(RealList &nodes) -> void;
+
 	/// @brief Read sample nodes and values from the data-point files.
 	/// @details Reads whitespace-separated real numbers from
 	///          `datas/data_points/nodes.txt` and `datas/data_points/values.txt`.

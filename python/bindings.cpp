@@ -297,6 +297,25 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("k"),
 		"Value of P^{(k)}(c) via repeated Horner division. Returns 0 when k > deg(P).");
 
+	detail.def(
+		"multiply_by_linear",
+		[](const std::vector<Real> &a, const std::vector<Real> &b) {
+			Polynomial pa = to_poly(a);
+			Polynomial pb = to_poly(b);
+			return detail::multiply_by_linear(pa, pb);
+		},
+		py::arg("a"),
+		py::arg("b"),
+		"Multiply a by degree-1 b. Returns Polynomial product.");
+
+	detail.def(
+		"node_polynomial",
+		[](const RealList &nodes) {
+			return detail::node_polynomial(nodes);
+		},
+		py::arg("nodes"),
+		"Build the node polynomial omega_{n+1}(x). Returns Polynomial.");
+
 	// ---- Lagrange ----
 	detail.def(
 		"Lagrange_polynomial",
@@ -559,6 +578,25 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("c"),
 		py::arg("poly"),
 		py::arg("k"));
+
+	m.def(
+		"display_horner_multiplication",
+		[](const std::vector<Real> &a, const std::vector<Real> &b) {
+			Polynomial pa = to_poly(a);
+			Polynomial pb = to_poly(b);
+			display_horner_multiplication(pa, pb);
+		},
+		py::arg("a"),
+		py::arg("b"));
+
+	m.def(
+		"display_nodes_polynomial_table",
+		[](const RealList &nodes, const std::string &var, long long pow) {
+			display_nodes_polynomial_table(nodes, var, static_cast<SizeType>(pow));
+		},
+		py::arg("nodes"),
+		py::arg("var") = "x",
+		py::arg("pow") = 1);
 
 	// ---- Interpolation display ----
 	m.def(

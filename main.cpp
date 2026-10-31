@@ -1,220 +1,304 @@
+#include <io/input_handling.hpp>
+#include <math_object.hpp>
+
 #include <chapter1/interpolation/horner.hpp>
+#include <chapter1/interpolation/interval.hpp>
+#include <chapter1/interpolation/inverse.hpp>
 #include <chapter1/interpolation/optimal.hpp>
 #include <chapter1/interpolation/polynomial/Bessel.hpp>
 #include <chapter1/interpolation/polynomial/Gauss.hpp>
 #include <chapter1/interpolation/polynomial/Lagrange.hpp>
 #include <chapter1/interpolation/polynomial/Newton.hpp>
 #include <chapter1/interpolation/polynomial/Stirling.hpp>
-#include <io/input_handling.hpp>
-#include <math_object.hpp>
+#include <chapter1/lsp.hpp>
+#include <chapter1/spline/cubic.hpp>
+#include <chapter1/spline/linear.hpp>
+#include <chapter1/spline/quadratic.hpp>
 
 #include <fmt/base.h>
 
-// C++ entry point: exercises every feature implemented in chapter 1.
+// C++ entry point: exercises every feature implemented.
 //   - `detail::` calls print the pure compute result for cross-checking.
 //   - `display_*` calls render the full plain-text/FTXUI-table output.
 // The interpolation samples come from f(x) = x^4 - 2x + 1, so the
 // degree-4 interpolants should reproduce f exactly.
 auto main() -> int {
-	// P(x) = 1 - 2x + x^4, evaluated at c = 2.
-	const Polynomial poly = {1, -2, 0, 0, 1};
-	const Real		 c	  = 2;
+	/////////////////////////////////////////////////////////////////////////
+	/*
+	 * Chapter1: Approximate Function
+	 */
+	/////////////////////////////////////////////////////////////////////////
 
-	// ------------------------------------------------------------------
-	// Horner: evaluation, division, derivatives, multiplication, nodes.
-	// ------------------------------------------------------------------
-	fmt::print("=== Horner: polynomial evaluation ===\r\n");
-	display_polynomial_evaluation(c, poly);
-	fmt::print("pure: P({}) = {}\r\n", c, detail::evaluate_polynomial(c, poly));
+	{
+		/// @brief Find Chebyshev nodes form
+		{
+			Real	 a;
+			Real	 b;
+			SizeType n;
 
-	fmt::print("\r\n=== Horner: division by (x - c) ===\r\n");
-	const Polynomial linear = {-c, 1};
-	display_horner_division(poly, linear);
-	const auto division = detail::divide_by_linear(poly, linear);
-	fmt::print("pure: Q(x) = {}, R = {}\r\n", division.quotient, division.remainder);
+			display_chebyshev_nodes(a, b, n);
+		}
 
-	fmt::print("\r\n=== Horner: k-th derivative at x = c ===\r\n");
-	for (SizeType k = 0; k <= 5; ++k) {
-		fmt::print("\r\nk = {}\r\n", k);
-		display_kth_derivative(c, poly, k);
-		fmt::print("pure: P^({})({}) = {}\r\n", k, c, detail::kth_derivative_value(c, poly, k));
+		/// @brief Find polynomial value
+		{
+			Real	   c;
+			Polynomial P = {};
+
+			display_polynomial_evaluation(c, P);
+		}
+
+		/// @brief Divide polynomial by linear polynomial
+		{
+			Polynomial P = {};
+			Real	   c;
+
+			display_horner_division(P, {-c, 1});
+		}
+
+		/// @brief Find k-th derivative value
+		{
+			Real	   c;
+			Polynomial P = {};
+			SizeType   k;
+
+			display_kth_derivative(c, P, k);
+		}
+
+		/// @brief Multiply polynomial by linear polynomial
+		{
+			Polynomial P = {};
+			Real	   c;
+
+			display_horner_multiplication(P, {-c, 1});
+		}
+
+		/// @brief Expand node polynomial omega_{n+1}(x)
+		{
+			RealList x = {};
+			ih::nodes_input(x);
+
+			display_nodes_polynomial_table(x);
+		}
+
+		/// @brief Extract equidistant interpolation points
+		{
+			RealList x = {};
+			RealList y = {};
+			Real	 x_target;
+			SizeType k;
+
+			ih::data_point_input(x, y);
+
+			display_equidistant_interpolation_points(x, y, x_target, k);
+		}
+
+		/// @brief Lagrange interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_Lagrange_interpolation(x, y);
+		}
+
+		/// @brief Newton general forward interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_Newton_general_forward(x, y);
+		}
+
+		/// @brief Newton equidistant forward interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_Newton_equidistant_forward(x, y);
+		}
+
+		/// @brief Newton general backward interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_Newton_general_backward(x, y);
+		}
+
+		/// @brief Newton equidistant backward interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_Newton_equidistant_backward(x, y);
+		}
+
+		/// @brief Gauss I interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_GaussI_interpolation(x, y);
+		}
+
+		/// @brief Gauss II interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_GaussII_interpolation(x, y);
+		}
+
+		/// @brief Stirling interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_Stirling_interpolation(x, y);
+		}
+
+		/// @brief Bessel interpolation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_Bessel_interpolation(x, y);
+		}
+
+		/// @brief Find monotonic intervals
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_monotonic_intervals(x, y);
+		}
+
+		/// @brief Find isolating intervals
+		{
+			RealList x = {};
+			RealList y = {};
+			Real	 y_target;
+
+			ih::data_point_input(x, y);
+
+			display_isolating_intervals(x, y, y_target);
+		}
+
+		/// @brief Inverse interpolation method
+		{
+			RealList x = {};
+			RealList y = {};
+			Real	 y_target;
+			SizeType m;
+
+			ih::data_point_input(x, y);
+
+			display_inverse_interpolation(x, y, y_target, m);
+		}
+
+		/// @brief Iterative inverse interpolation method
+		{
+			RealList x = {};
+			RealList y = {};
+			Real	 y_target;
+			Real	 epsilon;
+			SizeType m;
+
+			ih::data_point_input(x, y);
+
+			display_inverse_iteration(x, y, y_target, epsilon, m);
+		}
+
+		/// @brief Linear spline
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_linear_spline(x, y);
+		}
+
+		/// @brief Quadratic spline
+		{
+			/// Boundary condition:
+			/// weight[0]*S'_0(x0)  + weight[1]*S'_{n-1}(xn) = bias
+
+			RealList x		= {};
+			RealList y		= {};
+			RealList weight = {0, 0};
+			Real	 bias;
+
+			ih::data_point_input(x, y);
+
+			display_quadratic_spline(x, y, weight[0], weight[1], bias);
+		}
+
+		/// @brief Cubic spline
+		{
+			/// @brief Boundary condition 1:
+			/// weight[0][0]*S''_0(x0) + weight[0][1]*S''_{n-1}(xn)
+			///    + weight[0][2]*S'_0(x0)  + weight[0][3]*S'_{n-1}(xn) = bias[0]
+			/// @brief Boundary condition 2:
+			/// weight[1][0]*S''_0(x0) + weight[1][1]*S''_{n-1}(xn)
+			///	   + weight[1][2]*S'_0(x0) + weight[1][3]*S'_{n-1}(xn) = bias[1]
+
+			RealList  x		 = {};
+			RealList  y		 = {};
+			RealTable weight = {{0, 0, 0, 0}, {0, 0, 0, 0}};
+			RealList  bias	 = {0, 0};
+
+			ih::data_point_input(x, y);
+			Eigen::Matrix<double, 2, 5> boundary_conditions;
+			boundary_conditions << 
+				weight[0][0], weight[0][1], weight[0][2], weight[0][3], bias[0],
+				weight[1][0], weight[1][1], weight[1][2], weight[1][3], bias[1];
+
+			display_cubic_spline(x, y, boundary_conditions);
+		}
+
+		/// @brief Linear least squares approximation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_linear_lsp(x, y);
+		}
+
+		/// @brief Quadratic least squares approximation
+		{
+			RealList x = {};
+			RealList y = {};
+			ih::data_point_input(x, y);
+
+			display_quadratic_lsp(x, y);
+		}
+
+		/// @brief General least squares approximation
+		{
+			using namespace std;
+
+			RealList	  x = {};
+			RealList	  y = {};
+			FunctionsList phi;
+
+			ih::data_point_input(x, y);
+			phi = {[](Real x) { return 1; },
+				   [](Real x) { return x; },
+				   [](Real x) { return pow(x, 2); },
+				   [](Real x) { return exp(x); },
+				   [](Real x) { return log(x) / log(2); }};
+
+			display_general_lsp(x, y, phi);
+		}
 	}
-
-	const auto derivative_history = detail::build_derivative_history(c, poly, 4);
-	fmt::print("\r\nderivative history: {} quotients, {} remainders\r\n",
-			   derivative_history.quotients.size(),
-			   derivative_history.remainders.size());
-
-	fmt::print("\r\n=== Horner: multiplication by (x - c) ===\r\n");
-	display_horner_multiplication(poly, linear);
-	fmt::print("pure: product = {}\r\n", detail::multiply_by_linear(poly, linear));
-
-	const RealList nodes = {0, 1, 2, 3, 4};
-
-	fmt::print("\r\n=== Horner: node polynomials ===\r\n");
-	display_nodes_polynomial_table(nodes);
-	fmt::print("pure: node polynomial = {}\r\n", detail::node_polynomial(nodes));
-
-	const auto node_history = detail::build_node_polynomial_history(nodes);
-	fmt::print("pure: history size = {}, final node polynomial = {}\r\n",
-			   node_history.size(),
-			   node_history.back());
-
-	fmt::print("\r\n=== Horner: node polynomials with variable t and pow 2 ===\r\n");
-	const RealList squared_nodes = {1, 4, 9};
-	display_nodes_polynomial_table(squared_nodes, "t", 2);
-
-	// ------------------------------------------------------------------
-	// Polynomial arithmetic.
-	// ------------------------------------------------------------------
-	fmt::print("\r\n=== Polynomial arithmetic ===\r\n");
-	const Polynomial a = {1, 2, 3};
-	const Polynomial b = {4, 5};
-	fmt::print("({}) + ({}) = {}\r\n", a, b, a + b);
-	fmt::print("({}) * ({}) = {}\r\n", a, b, a * b);
-	fmt::print("({}) * 2.5 = {}\r\n", a, a * 2.5);
-	fmt::print("2.5 * ({}) = {}\r\n", a, 2.5 * a);
-
-	// ------------------------------------------------------------------
-	// Chebyshev nodes.
-	// ------------------------------------------------------------------
-	fmt::print("\r\n=== Chebyshev nodes on [-1, 1] ===\r\n");
-	display_chebyshev_nodes(-1.0, 1.0, 5);
-	const auto chebyshev_nodes = detail::generate_chebyshev_nodes(-1.0, 1.0, 5);
-	fmt::print("pure: {}\r\n", chebyshev_nodes);
-
-	// ------------------------------------------------------------------
-	// Interpolation samples: f(x) = x^4 - 2x + 1 on x = 0..4.
-	// ------------------------------------------------------------------
-	const RealList values = {1, 0, 13, 76, 249};
-
-	fmt::print("\r\n=== Lagrange interpolation ===\r\n");
-	display_Lagrange_interpolation(nodes, values);
-	const auto lagrange_history = detail::build_Lagrange_interpolation_history(nodes, values);
-	const auto lagrange_poly	= detail::Lagrange_polynomial(nodes, values);
-	fmt::print("pure: L(x) = {}\r\n", lagrange_poly);
-	fmt::print("pure: L(2.5) = {}, P(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(2.5, lagrange_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} basis polynomials, {} normalizers\r\n",
-			   lagrange_history.basis.size(),
-			   lagrange_history.normalizers.size());
-
-	// Non-equidistant nodes for the general Newton formulas.
-	const RealList general_nodes  = {0, 1, 2, 4, 6};
-	const RealList general_values = {1, 0, 13, 249, 1285};
-
-	fmt::print("\r\n=== Newton general forward interpolation ===\r\n");
-	display_Newton_general_forward(general_nodes, general_values);
-	const auto newton_general_forward =
-		detail::build_Newton_general_forward_history(general_nodes, general_values);
-	const auto newton_general_forward_poly =
-		detail::Newton_general_forward_polynomial(general_nodes, general_values);
-	fmt::print("pure: P(x) = {}\r\n", newton_general_forward_poly);
-	fmt::print("pure: P(2.5) = {}, f(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(2.5, newton_general_forward_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} divided-difference rows, {} node polynomials\r\n",
-			   newton_general_forward.divided_diffs.size(),
-			   newton_general_forward.node_polys.size());
-
-	fmt::print("\r\n=== Newton general backward interpolation ===\r\n");
-	display_Newton_general_backward(general_nodes, general_values);
-	const auto newton_general_backward =
-		detail::build_Newton_general_backward_history(general_nodes, general_values);
-	const auto newton_general_backward_poly =
-		detail::Newton_general_backward_polynomial(general_nodes, general_values);
-	fmt::print("pure: P(x) = {}\r\n", newton_general_backward_poly);
-	fmt::print("pure: P(2.5) = {}, f(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(2.5, newton_general_backward_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} divided-difference rows, {} node polynomials\r\n",
-			   newton_general_backward.divided_diffs.size(),
-			   newton_general_backward.node_polys.size());
-
-	fmt::print("\r\n=== Newton equidistant forward interpolation ===\r\n");
-	display_Newton_equidistant_forward(nodes, values);
-	const auto newton_equidistant_forward =
-		detail::build_Newton_equidistant_forward_history(nodes, values);
-	const auto newton_equidistant_forward_poly =
-		detail::Newton_equidistant_forward_polynomial(nodes, values);
-	fmt::print("pure: Q(t) = {}\r\n", fmt::format("{:t}", newton_equidistant_forward_poly));
-	fmt::print("pure: Q(t = 2.5) = {}, f(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(2.5, newton_equidistant_forward_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} finite-difference rows, {} node polynomials\r\n",
-			   newton_equidistant_forward.finite_diffs.size(),
-			   newton_equidistant_forward.node_polys.size());
-
-	fmt::print("\r\n=== Newton equidistant backward interpolation ===\r\n");
-	display_Newton_equidistant_backward(nodes, values);
-	const auto newton_equidistant_backward =
-		detail::build_Newton_equidistant_backward_history(nodes, values);
-	const auto newton_equidistant_backward_poly =
-		detail::Newton_equidistant_backward_polynomial(nodes, values);
-	fmt::print("pure: Q(t) = {}\r\n", fmt::format("{:t}", newton_equidistant_backward_poly));
-	// x = 2.5, x_n = 4, h = 1 => t = -1.5
-	fmt::print("pure: Q(t = -1.5) = {}, f(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(-1.5, newton_equidistant_backward_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} finite-difference rows, {} node polynomials\r\n",
-			   newton_equidistant_backward.finite_diffs.size(),
-			   newton_equidistant_backward.node_polys.size());
-
-	fmt::print("\r\n=== Gauss I interpolation ===\r\n");
-	display_GaussI_interpolation(nodes, values);
-	const auto gauss_i_history = detail::build_GaussI_history(nodes, values);
-	const auto gauss_i_poly	   = detail::GaussI_polynomial(nodes, values);
-	fmt::print("pure: Q(t) = {}\r\n", fmt::format("{:t}", gauss_i_poly));
-	// x = 2.5, x_n = 2, h = 1 => t = 0.5
-	fmt::print("pure: Q(t = 0.5) = {}, f(2.5) = {}\r\n",
-
-			   detail::evaluate_polynomial(0.5, gauss_i_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} finite-difference rows, {} node polynomials\r\n",
-			   gauss_i_history.finite_diffs.size(),
-			   gauss_i_history.node_polys.size());
-
-	fmt::print("\r\n=== Gauss II interpolation ===\r\n");
-	display_GaussII_interpolation(nodes, values);
-	const auto gauss_ii_history = detail::build_GaussII_history(nodes, values);
-	const auto gauss_ii_poly	= detail::GaussII_polynomial(nodes, values);
-	fmt::print("pure: Q(t) = {}\r\n", fmt::format("{:t}", gauss_ii_poly));
-	// x = 2.5, x_n = 2, h = 1 => t = 0.5
-	fmt::print("pure: Q(t = 0.5) = {}, f(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(0.5, gauss_ii_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} finite-difference rows, {} node polynomials\r\n",
-			   gauss_ii_history.finite_diffs.size(),
-			   gauss_ii_history.node_polys.size());
-
-	fmt::print("\r\n=== Stirling interpolation ===\r\n");
-	display_Stirling_interpolation(nodes, values);
-	const auto stirling_history = detail::build_Stirling_history(nodes, values);
-	const auto stirling_poly	= detail::Stirling_polynomial(nodes, values);
-	fmt::print("pure: Q(t) = {}\r\n", fmt::format("{:t}", stirling_poly));
-	// x = 2.5, x_n = 2, h = 1 => t = 0.5
-	fmt::print("pure: Q(t = 0.5) = {}, f(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(0.5, stirling_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} finite-difference rows, {} node polynomials\r\n",
-			   stirling_history.finite_diffs.size(),
-			   stirling_history.node_polys.size());
-
-	// Bessel needs an even number of equidistant nodes.
-	const RealList bessel_nodes	 = {0, 1, 2, 3, 4, 5};
-	const RealList bessel_values = {1, 0, 13, 76, 249, 616};
-
-	fmt::print("\r\n=== Bessel interpolation ===\r\n");
-	display_Bessel_interpolation(bessel_nodes, bessel_values);
-	const auto bessel_history = detail::build_Bessel_history(bessel_nodes, bessel_values);
-	const auto bessel_poly	  = detail::Bessel_polynomial(bessel_nodes, bessel_values);
-	fmt::print("pure: Q(u) = {}\r\n", fmt::format("{:u}", bessel_poly));
-	// x = 2.5, x_(n-1) = 2, h = 1 => u = 0
-	fmt::print("pure: Q(u = 0) = {}, f(2.5) = {}\r\n",
-			   detail::evaluate_polynomial(0.0, bessel_poly),
-			   detail::evaluate_polynomial(2.5, poly));
-	fmt::print("pure: {} finite-difference rows, {} node polynomials\r\n",
-			   bessel_history.finite_diffs.size(),
-			   bessel_history.node_polys.size());
 }
