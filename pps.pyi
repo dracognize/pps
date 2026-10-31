@@ -187,6 +187,16 @@ class _DetailModule:
     ) -> list[float]:
         """Roots of ``f(x) = target_value`` via inverse interpolation."""
         ...
+    def inverse_iteration(
+        self,
+        nodes: list[float],
+        values: list[float],
+        target_value: float,
+        tolerance: float,
+        max_points: int,
+    ) -> list[float]:
+        """Roots of ``f(x) = target_value`` via iterative inverse interpolation."""
+        ...
 
     # ---- Splines ----
     def find_linear_spline(
@@ -308,6 +318,16 @@ def display_inverse_interpolation(
     method: InterpolationMethod = InterpolationMethod.NewtonForward,
 ) -> None:
     """Render full inverse interpolation: isolating intervals, each step, and roots."""
+    ...
+
+def display_inverse_iteration(
+    nodes: list[float],
+    values: list[float],
+    target_value: float,
+    tolerance: float,
+    max_points: int,
+) -> None:
+    """Render iterative inverse interpolation: isolating intervals, each iteration step, and roots."""
     ...
 
 # ---- Spline display ----

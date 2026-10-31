@@ -131,6 +131,20 @@ struct SplineHistory {
 		PolynomialList	piecewise_poly;
 };
 
+/// @brief History of iterative inverse interpolation.
+struct InverseInterpolationIterativeHistory {
+		IntervalsList	  isolating_intervals; ///< Isolating intervals [p_i, p_i + 1].
+		std::vector<bool> is_forward; ///< True if Newton forward was used, false for backward.
+		RealTable		  interpolation_nodes;	///< Interpolation nodes used for each interval.
+		RealTable		  interpolation_values; ///< Interpolation values used for each interval.
+		PolynomialList	  polynomials;			///< Interpolation polynomials P_i(t).
+		PolynomialList	  phi_functions;		///< Iteration functions phi(t).
+		std::vector<RealTable>
+				 iteration_tables; ///< Iteration rows [iter, t_0, t, delta] for each interval.
+		RealList interval_roots;   ///< Root found in each isolating interval.
+		RealList roots;			   ///< All distinct roots found.
+};
+
 /// @cond INTERNAL
 template <typename Char>
 struct fmt::range_format_kind<Polynomial, Char>

@@ -122,6 +122,14 @@ namespace {
 		return static_cast<SizeType>(n);
 	}
 
+	/// Enforce `tolerance > 0` and finite.
+	auto check_tolerance(Real tol) -> Real {
+		if (tol <= 0.0 || !std::isfinite(tol)) {
+			throw std::invalid_argument(fmt::format("tolerance must be positive, got {}", tol));
+		}
+		return tol;
+	}
+
 	/// Convert a 2x5 Python nested list into the Eigen fixed-size matrix used by
 	/// cubic spline routines. Raises `ValueError` if the shape is wrong.
 	auto to_bc_matrix(const std::vector<std::vector<double>> &rows)
@@ -448,6 +456,27 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("method") = InterpolationMethod::NewtonForward,
 		"Find roots of f(x) = target_value by inverse interpolation. Returns list of roots.");
 
+	detail.def(
+		"inverse_iteration",
+		[](const RealList &nodes,
+		   const RealList &values,
+		   Real			  target_value,
+		   Real			  tolerance,
+		   long long	  max_points) {
+			return detail::inverse_iteration(
+				nodes,
+				values,
+				target_value,
+				check_tolerance(tolerance),
+				check_max_points(max_points));
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("target_value"),
+		py::arg("tolerance"),
+		py::arg("max_points"),
+		"Find roots of f(x) = target_value by iterative inverse interpolation. Returns list of roots.");
+
 	// ---- Splines ----
 	detail.def(
 		"find_linear_spline",
@@ -649,6 +678,26 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("target_value"),
 		py::arg("max_points"),
 		py::arg("method") = InterpolationMethod::NewtonForward);
+
+	m.def(
+		"display_inverse_iteration",
+		[](const RealList &nodes,
+		   const RealList &values,
+		   Real			  target_value,
+		   Real			  tolerance,
+		   long long	  max_points) {
+			display_inverse_iteration(
+				nodes,
+				values,
+				target_value,
+				check_tolerance(tolerance),
+				check_max_points(max_points));
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("target_value"),
+		py::arg("tolerance"),
+		py::arg("max_points"));
 
 	// ---- Spline display ----
 	m.def(
