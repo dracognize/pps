@@ -15,7 +15,7 @@ Conventions (same as C++):
 
 from collections.abc import Callable, Iterator
 from enum import Enum
-from typing import overload
+from typing import Any, overload
 
 Real = float
 RealList = list
@@ -63,6 +63,13 @@ class InterpolationMethod(Enum):
     Lagrange = ...
     NewtonForward = ...
     NewtonBackward = ...
+
+class LspErrorType(Enum):
+    """Error evaluation metric for least-squares approximation."""
+
+    SSE = ...
+    MSE = ...
+    RMSE = ...
 
 class _DetailModule:
     """Pure compute (mirrors C++ ``detail::``); no I/O."""
@@ -234,6 +241,13 @@ class _DetailModule:
         ...
 
     # ---- LSP ----
+    def find_design_matrix(
+        self,
+        nodes: list[float],
+        basis: list[Callable[[float], float]],
+    ) -> Any:
+        """Design matrix for the supplied basis functions."""
+        ...
     def find_approximation_coefficients(
         self,
         nodes: list[float],
@@ -241,6 +255,43 @@ class _DetailModule:
         basis: list[Callable[[float], float]],
     ) -> list[float]:
         """Least-squares coefficients for arbitrary basis functions."""
+        ...
+    def calculate_sse(
+        self,
+        nodes: list[float],
+        values: list[float],
+        basis: list[Callable[[float], float]],
+        coeffs: list[float],
+    ) -> float:
+        """Sum of Squared Errors (SSE) of approximation on sample points."""
+        ...
+    def calculate_mse(
+        self,
+        nodes: list[float],
+        values: list[float],
+        basis: list[Callable[[float], float]],
+        coeffs: list[float],
+    ) -> float:
+        """Mean Squared Error (MSE) of approximation on sample points."""
+        ...
+    def calculate_rmse(
+        self,
+        nodes: list[float],
+        values: list[float],
+        basis: list[Callable[[float], float]],
+        coeffs: list[float],
+    ) -> float:
+        """Root Mean Squared Error (RMSE) of approximation on sample points."""
+        ...
+    def render_lsp_error(
+        self,
+        nodes: list[float],
+        values: list[float],
+        basis: list[Callable[[float], float]],
+        coeffs: list[float],
+        error_type: LspErrorType,
+    ) -> None:
+        """Render least-squares approximation error evaluation table and formula."""
         ...
 
 detail: _DetailModule
@@ -381,18 +432,27 @@ def display_cubic_spline(
     ...
 
 # ---- LSP display ----
-def display_linear_lsp(nodes: list[float], values: list[float]) -> None:
-    """Render the linear least-squares design matrix and ``F(x) = a*x + b``."""
+def display_linear_lsp(
+    nodes: list[float],
+    values: list[float],
+    error_type: LspErrorType = LspErrorType.RMSE,
+) -> None:
+    """Render the linear least-squares design matrix, ``F(x) = a*x + b``, and error table."""
     ...
 
-def display_quadratic_lsp(nodes: list[float], values: list[float]) -> None:
-    """Render the quadratic least-squares design matrix and ``F(x) = a*x^2 + b*x + c``."""
+def display_quadratic_lsp(
+    nodes: list[float],
+    values: list[float],
+    error_type: LspErrorType = LspErrorType.RMSE,
+) -> None:
+    """Render the quadratic least-squares design matrix, ``F(x) = a*x^2 + b*x + c``, and error table."""
     ...
 
 def display_general_lsp(
     nodes: list[float],
     values: list[float],
     basis: list[Callable[[float], float]],
+    error_type: LspErrorType = LspErrorType.RMSE,
 ) -> None:
-    """Render least-squares over arbitrary basis functions."""
+    """Render least-squares over arbitrary basis functions and error table."""
     ...

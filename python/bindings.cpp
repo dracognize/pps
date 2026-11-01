@@ -254,6 +254,13 @@ PYBIND11_MODULE(pps, m) {
 		.value("NewtonBackward", InterpolationMethod::NewtonBackward)
 		.export_values();
 
+	// LspErrorType enum for least-squares error evaluation.
+	py::enum_<LspErrorType>(m, "LspErrorType")
+		.value("SSE", LspErrorType::SSE)
+		.value("MSE", LspErrorType::MSE)
+		.value("RMSE", LspErrorType::RMSE)
+		.export_values();
+
 	// ---- Pure compute (mirror C++ detail::; no I/O) ----
 	py::module_ detail = m.def_submodule("detail", "Core compute API (mirrors C++ detail::)");
 	detail.def(
@@ -532,6 +539,15 @@ PYBIND11_MODULE(pps, m) {
 
 	// ---- LSP compute ----
 	detail.def(
+		"find_design_matrix",
+		[](const RealList &nodes, const FunctionsList &basis) {
+			return detail::find_design_matrix(nodes, basis);
+		},
+		py::arg("nodes"),
+		py::arg("basis"),
+		"Build the design matrix for the supplied basis functions. Returns 2D numpy array (MatrixXd).");
+
+	detail.def(
 		"find_approximation_coefficients",
 		[](const RealList &nodes, const RealList &values, const FunctionsList &basis) {
 			return detail::find_approximation_coefficients(nodes, values, basis);
@@ -540,6 +556,64 @@ PYBIND11_MODULE(pps, m) {
 		py::arg("values"),
 		py::arg("basis"),
 		"Least-squares coefficients for arbitrary basis functions. Returns list of coefficients.");
+
+	detail.def(
+		"calculate_sse",
+		[](const RealList &nodes,
+		   const RealList &values,
+		   const FunctionsList &basis,
+		   const RealList &coeffs) {
+			return detail::calculate_sse(nodes, values, basis, coeffs);
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("basis"),
+		py::arg("coeffs"),
+		"Sum of Squared Errors (SSE) of approximation on sample points.");
+
+	detail.def(
+		"calculate_mse",
+		[](const RealList &nodes,
+		   const RealList &values,
+		   const FunctionsList &basis,
+		   const RealList &coeffs) {
+			return detail::calculate_mse(nodes, values, basis, coeffs);
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("basis"),
+		py::arg("coeffs"),
+		"Mean Squared Error (MSE) of approximation on sample points.");
+
+	detail.def(
+		"calculate_rmse",
+		[](const RealList &nodes,
+		   const RealList &values,
+		   const FunctionsList &basis,
+		   const RealList &coeffs) {
+			return detail::calculate_rmse(nodes, values, basis, coeffs);
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("basis"),
+		py::arg("coeffs"),
+		"Root Mean Squared Error (RMSE) of approximation on sample points.");
+
+	detail.def(
+		"render_lsp_error",
+		[](const RealList &nodes,
+		   const RealList &values,
+		   const FunctionsList &basis,
+		   const RealList &coeffs,
+		   LspErrorType error_type) {
+			detail::render_lsp_error(nodes, values, basis, coeffs, error_type);
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("basis"),
+		py::arg("coeffs"),
+		py::arg("error_type"),
+		"Render least-squares approximation error evaluation table and formula.");
 
 	// ---- Display (compute + render to stdout; return None) ----
 	m.def(
@@ -772,26 +846,29 @@ PYBIND11_MODULE(pps, m) {
 	// ---- LSP display ----
 	m.def(
 		"display_linear_lsp",
-		[](const RealList &nodes, const RealList &values) {
-			display_linear_lsp(nodes, values);
-		},
-		py::arg("nodes"),
-		py::arg("values"));
-
-	m.def(
-		"display_quadratic_lsp",
-		[](const RealList &nodes, const RealList &values) {
-			display_quadratic_lsp(nodes, values);
-		},
-		py::arg("nodes"),
-		py::arg("values"));
-
-	m.def(
-		"display_general_lsp",
-		[](const RealList &nodes, const RealList &values, const FunctionsList &basis) {
-			display_general_lsp(nodes, values, basis);
+		[](const RealList &nodes, const RealList &values, LspErrorType error_type) {
+			display_linear_lsp(nodes, values, error_type);
 		},
 		py::arg("nodes"),
 		py::arg("values"),
-		py::arg("basis"));
+		py::arg("error_type") = LspErrorType::RMSE);
+
+	m.def(
+		"display_quadratic_lsp",
+		[](const RealList &nodes, const RealList &values, LspErrorType error_type) {
+			display_quadratic_lsp(nodes, values, error_type);
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("error_type") = LspErrorType::RMSE);
+
+	m.def(
+		"display_general_lsp",
+		[](const RealList &nodes, const RealList &values, const FunctionsList &basis, LspErrorType error_type) {
+			display_general_lsp(nodes, values, basis, error_type);
+		},
+		py::arg("nodes"),
+		py::arg("values"),
+		py::arg("basis"),
+		py::arg("error_type") = LspErrorType::RMSE);
 }

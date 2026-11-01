@@ -220,7 +220,7 @@ auto display_Bessel_interpolation(const RealList &nodes, const RealList &values)
 
 	const auto poly = Bessel_polynomial(history);
 	fmt::print(
-		"\r\nBessel interpolated polynomials: P(x) = P(x{} + (u + 0.5)h) = Q(u) = sum[i=0,{}] "
+		"\r\nBessel interpolated polynomials: P(x) = P(x{} + (u + 0.5)h) = Q(u) = ∑[i=0,{}] "
 		"[c_(2i)/(2i)! * w_i(u^2) + c_(2i+1)/(2i+1)! * u*w_i(u^2)]",
 		n - 1,
 		n - 1);

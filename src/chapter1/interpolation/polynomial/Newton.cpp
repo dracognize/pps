@@ -126,7 +126,7 @@ namespace detail {
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
 		fmt::print(
-			"\r\nNode polynomials' coefficients w_(i+1)(x) = prod[k=0,i](x - x_k) (w0(x) = 1)\r\n");
+			"\r\nNode polynomials' coefficients w_(i+1)(x) = ∏[k=0,i](x - x_k) (w0(x) = 1)\r\n");
 		RealList sub_nodes(nodes.begin(), nodes.end() - 1);
 		detail::render_nodes_polynomial_table(sub_nodes, history.node_polys);
 	}
@@ -244,7 +244,7 @@ namespace detail {
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
 		fmt::print(
-			"\r\nNode polynomials' coefficients w_(i+1)(x) = prod[k={}-i,{}](x - x_({}-k)) (w0(x) "
+			"\r\nNode polynomials' coefficients w_(i+1)(x) = ∏[k={}-i,{}](x - x_({}-k)) (w0(x) "
 			"= 1)\r\n",
 			n,
 			n,
@@ -378,7 +378,7 @@ namespace detail {
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
 		fmt::print(
-			"\r\nNode polynomials' coefficients w_(i+1)(t) = prod[k=0,i](t - k) (w0(t) = 1)\r\n");
+			"\r\nNode polynomials' coefficients w_(i+1)(t) = ∏[k=0,i](t - k) (w0(t) = 1)\r\n");
 		RealList sub_nodes(nodes.begin(), nodes.end() - 1);
 		detail::render_nodes_polynomial_table(sub_nodes, history.node_polys, "t");
 	}
@@ -511,7 +511,7 @@ namespace detail {
 		}
 		ui::render_table(coeff_table, config::kTableMinWidth);
 
-		fmt::print("\r\nNode polynomials' coefficients w_(i+1)(t) = prod[k=0,i](t + k) (w0(t) "
+		fmt::print("\r\nNode polynomials' coefficients w_(i+1)(t) = ∏[k=0,i](t + k) (w0(t) "
 				   "= 1)\r\n");
 		RealList t_nodes{};
 		for (SizeType i = 0; i < n; ++i) {
@@ -588,7 +588,7 @@ auto display_Newton_general_forward(const RealList &nodes, const RealList &value
 	detail::render_Newton_general_forward(nodes, history);
 
 	const auto poly = Newton_general_forward_polynomial(history);
-	fmt::print("\r\nNewton interpolated polynomials: P(x) = sum[i=0,{}] f[0][i] * w_(i)(x)",
+	fmt::print("\r\nNewton interpolated polynomials: P(x) = ∑[i=0,{}] f[0][i] * w_(i)(x)",
 			   nodes.size() - 1);
 	fmt::print("\r\n                                      = {}\r\n", poly);
 }
@@ -606,7 +606,7 @@ auto display_Newton_general_backward(const RealList &nodes, const RealList &valu
 	detail::render_Newton_general_backward(nodes, history);
 
 	const auto poly = Newton_general_backward_polynomial(history);
-	fmt::print("\r\nNewton interpolated polynomials: P(x) = sum[i=0,{}] f[{}][i] * w_(i)(x)", n, n);
+	fmt::print("\r\nNewton interpolated polynomials: P(x) = ∑[i=0,{}] f[{}][i] * w_(i)(x)", n, n);
 	fmt::print("\r\n                                      = {}\r\n", poly);
 }
 
@@ -623,7 +623,7 @@ auto display_Newton_equidistant_forward(const RealList &nodes, const RealList &v
 	detail::render_Newton_equidistant_forward(nodes, history);
 
 	const auto poly = Newton_equidistant_forward_polynomial(history);
-	fmt::print("\r\nNewton interpolated polynomials: P(x) = P(x0 + th) = Q(t) = sum[i=0,{}] "
+	fmt::print("\r\nNewton interpolated polynomials: P(x) = P(x0 + th) = Q(t) = ∑[i=0,{}] "
 			   "Δ[0][i] / i! * w_i(t)",
 			   nodes.size() - 1);
 	fmt::print("\r\n                                      = {}\r\n", fmt::format("{:t}", poly));
@@ -646,7 +646,7 @@ auto display_Newton_equidistant_backward(const RealList &nodes, const RealList &
 	detail::render_Newton_equidistant_backward(nodes, history);
 
 	const auto poly = Newton_equidistant_backward_polynomial(history);
-	fmt::print("\r\nNewton interpolated polynomials: P(x) = P(x{} + th) = Q(t) = sum[i=0,{}] "
+	fmt::print("\r\nNewton interpolated polynomials: P(x) = P(x{} + th) = Q(t) = ∑[i=0,{}] "
 			   "∇[{}][i] / i! * w_i(t)",
 			   n,
 			   n,

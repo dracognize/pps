@@ -227,7 +227,7 @@ auto display_Stirling_interpolation(const RealList &nodes, const RealList &value
 
 	const auto poly = Stirling_polynomial(history);
 	fmt::print(
-		"\r\nStirling interpolated polynomials: P(x) = P(x{} + th) = Q(t) = y{} + sum[i=0,{}] "
+		"\r\nStirling interpolated polynomials: P(x) = P(x{} + th) = Q(t) = y{} + ∑[i=0,{}] "
 		"(c_(2i+1)/(2i+1)! * t*w_i(t^2) + (c_(2i+2)/(2i+2)! * t^2*w_i(t^2)",
 		n,
 		n,

@@ -157,7 +157,7 @@ auto display_Lagrange_interpolation(const RealList &nodes, const RealList &value
 	}
 
 	const auto poly = Lagrange_polynomial(history);
-	fmt::print("\r\nLagrange interpolated polynomials: L(x) = sum[i=0,{}]: y_i / D_i * C_i(x)",
+	fmt::print("\r\nLagrange interpolated polynomials: L(x) = ∑[i=0,{}]: y_i / D_i * C_i(x)",
 			   nodes.size());
 	fmt::print("\r\n                                        = {}\r\n", poly);
 }

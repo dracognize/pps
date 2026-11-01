@@ -372,7 +372,7 @@ auto display_GaussI_interpolation(const RealList &nodes, const RealList &values)
 	detail::render_GaussI_interpolation(history);
 
 	const auto poly = GaussI_polynomial(history);
-	fmt::print("\r\nGauss I interpolated polynomials: P(x) = P(x{} + th) = Q(t) = sum[i=0,{}] "
+	fmt::print("\r\nGauss I interpolated polynomials: P(x) = P(x{} + th) = Q(t) = ∑[i=0,{}] "
 			   "c_i / i! * w_i(t)",
 			   n,
 			   2 * n);
@@ -395,7 +395,7 @@ auto display_GaussII_interpolation(const RealList &nodes, const RealList &values
 	detail::render_GaussII_interpolation(history);
 
 	const auto poly = GaussII_polynomial(history);
-	fmt::print("\r\nGauss II interpolated polynomials: P(x) = P(x{} + th) = Q(t) = sum[i=0,{}] "
+	fmt::print("\r\nGauss II interpolated polynomials: P(x) = P(x{} + th) = Q(t) = ∑[i=0,{}] "
 			   "c_i / i! * w_i(t)",
 			   n,
 			   2 * n);

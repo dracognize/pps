@@ -269,18 +269,20 @@ auto main() -> int {
 		{
 			RealList x = {};
 			RealList y = {};
+			auto error_type = LspErrorType::RMSE;
 			ih::data_point_input(x, y);
 
-			display_linear_lsp(x, y);
+			display_linear_lsp(x, y, error_type);
 		}
 
 		/// @brief Quadratic least squares approximation
 		{
 			RealList x = {};
 			RealList y = {};
+			auto error_type = LspErrorType::RMSE;
 			ih::data_point_input(x, y);
 
-			display_quadratic_lsp(x, y);
+			display_quadratic_lsp(x, y, error_type);
 		}
 
 		/// @brief General least squares approximation
@@ -289,6 +291,7 @@ auto main() -> int {
 
 			RealList	  x = {};
 			RealList	  y = {};
+			auto error_type = LspErrorType::RMSE;
 			FunctionsList phi;
 
 			ih::data_point_input(x, y);
@@ -298,7 +301,7 @@ auto main() -> int {
 				   [](Real x) { return exp(x); },
 				   [](Real x) { return log(x) / log(2); }};
 
-			display_general_lsp(x, y, phi);
+			display_general_lsp(x, y, phi, error_type);
 		}
 	}
 }

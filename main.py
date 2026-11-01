@@ -80,11 +80,11 @@ def main() -> int:
     if True:
         x: RealList = []
         y: RealList = []
-        x_bar: Real = 0.0
+        x_target: Real = 0.0
         k: SizeType = 3
         ih.data_point_input(x, y)
 
-        display_equidistant_interpolation_points(x, y, x_bar, k)
+        display_equidistant_interpolation_points(x, y, x_target, k)
 
     # Lagrange interpolation
     if True:
@@ -170,31 +170,31 @@ def main() -> int:
     if True:
         x: RealList = []
         y: RealList = []
-        y_bar: Real = 0.0
+        y_target: Real = 0.0
         ih.data_point_input(x, y)
 
-        display_isolating_intervals(x, y, y_bar)
+        display_isolating_intervals(x, y, y_target)
 
     # Inverse interpolation method
     if True:
         x: RealList = []
         y: RealList = []
-        y_bar: Real = 0.0
+        y_target: Real = 0.0
         m: SizeType = 4
         ih.data_point_input(x, y)
 
-        display_inverse_interpolation(x, y, y_bar, m)
+        display_inverse_interpolation(x, y, y_target, m)
 
     # Iterative inverse interpolation method
     if True:
         x: RealList = []
         y: RealList = []
-        y_bar: Real = 0.0
+        y_target: Real = 0.0
         epsilon: Real = 1e-4
         m: SizeType = 4
         ih.data_point_input(x, y)
 
-        display_inverse_iteration(x, y, y_bar, epsilon, m)
+        display_inverse_iteration(x, y, y_target, epsilon, m)
 
     # Linear spline
     if True:
@@ -206,40 +206,38 @@ def main() -> int:
 
     # Quadratic spline
     if True:
+        # Boundary condition:
+        # weight[0]*S'_0(x0)  + weight[1]*S'_{n-1}(xn) = bias
+
         x: RealList = []
         y: RealList = []
-        weight: RealList = [0,0]
-        bias: Real = 1.0
+        quadratic_weight: RealList = [0.0, 0.0]
+        quadratic_bias: Real = 0.0
         ih.data_point_input(x, y)
 
-        display_quadratic_spline(x, y, weight[0], weight[1], bias)
+        display_quadratic_spline(
+            x, y, quadratic_weight[0], quadratic_weight[1], quadratic_bias
+        )
 
     # Cubic spline
     if True:
+        # Boundary condition 1:
+        # weight[0][0]*S''_0(x0) + weight[0][1]*S''_{n-1}(xn)
+        #    + weight[0][2]*S'_0(x0)  + weight[0][3]*S'_{n-1}(xn) = bias[0]
+        # Boundary condition 2:
+        # weight[1][0]*S''_0(x0) + weight[1][1]*S''_{n-1}(xn)
+        #	   + weight[1][2]*S'_0(x0) + weight[1][3]*S'_{n-1}(xn) = bias[1]
+
         x: RealList = []
         y: RealList = []
-        # Boundary condition 1:
-        # a0_0*S''_0(x0) + a0_1*S''_{n-1}(xn) + a0_2*S'_0(x0) + a0_3*S'_{n-1}(xn) = gamma0
-        # Boundary condition 2:
-        # a1_0*S''_0(x0) + a1_1*S''_{n-1}(xn) + a1_2*S'_0(x0) + a1_3*S'_{n-1}(xn) = gamma1
-
-        a0_0: Real = 1.0
-        a0_1: Real = 0.0
-        a0_2: Real = 0.0
-        a0_3: Real = 0.0
-        gamma0: Real = 0.0
-
-        a1_0: Real = 0.0
-        a1_1: Real = 1.0
-        a1_2: Real = 0.0
-        a1_3: Real = 0.0
-        gamma1: Real = 0.0
+        weight: list[list[float]] = [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]]
+        bias: list[float] = [0.0, 0.0]
 
         ih.data_point_input(x, y)
 
         boundary_conditions: list[list[float]] = [
-            [a0_0, a0_1, a0_2, a0_3, gamma0],
-            [a1_0, a1_1, a1_2, a1_3, gamma1],
+            [weight[0][0], weight[0][1], weight[0][2], weight[0][3], bias[0]],
+            [weight[1][0], weight[1][1], weight[1][2], weight[1][3], bias[1]],
         ]
 
         display_cubic_spline(x, y, boundary_conditions)
@@ -248,33 +246,36 @@ def main() -> int:
     if True:
         x: RealList = []
         y: RealList = []
+        error_type: LspErrorType = LspErrorType.RMSE
         ih.data_point_input(x, y)
 
-        display_linear_lsp(x, y)
+        display_linear_lsp(x, y, error_type)
 
     # Quadratic least squares approximation
     if True:
         x: RealList = []
         y: RealList = []
+        error_type: LspErrorType = LspErrorType.RMSE
         ih.data_point_input(x, y)
 
-        display_quadratic_lsp(x, y)
+        display_quadratic_lsp(x, y, error_type)
 
     # General least squares approximation
     if True:
         x: RealList = []
         y: RealList = []
+        error_type: LspErrorType = LspErrorType.RMSE
 
         ih.data_point_input(x, y)
         phi = [
             lambda x: 1.0,
             lambda x: x,
-            lambda x: x**2,
+            lambda x: math.pow(x, 2),
             lambda x: math.exp(x),
             lambda x: math.log(x) / math.log(2) if x > 0 else 0.0,
         ]
 
-        display_general_lsp(x, y, phi)
+        display_general_lsp(x, y, phi, error_type)
 
     return 0
 
