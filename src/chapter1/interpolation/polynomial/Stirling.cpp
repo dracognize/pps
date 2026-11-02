@@ -34,8 +34,11 @@ namespace detail {
 		SizeType n = nodes.size() / 2;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < 2 * n; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		EquidistantHistory history{};
@@ -74,8 +77,11 @@ namespace detail {
 		SizeType n = nodes.size() / 2;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < 2 * n; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		Polynomial result(2 * n + 1, 0.0);
@@ -226,12 +232,11 @@ auto display_Stirling_interpolation(const RealList &nodes, const RealList &value
 	detail::render_Stirling_interpolation(history);
 
 	const auto poly = Stirling_polynomial(history);
-	fmt::print(
-		"\r\nStirling interpolated polynomials: P(x) = P(x{} + th) = Q(t) = y{} + ∑[i=0,{}] "
-		"(c_(2i+1)/(2i+1)! * t*w_i(t^2) + (c_(2i+2)/(2i+2)! * t^2*w_i(t^2)",
-		n,
-		n,
-		n - 1);
+	fmt::print("\r\nStirling interpolated polynomials: P(x) = P(x{} + th) = Q(t) = y{} + ∑[i=0,{}] "
+			   "(c_(2i+1)/(2i+1)! * t*w_i(t^2) + (c_(2i+2)/(2i+2)! * t^2*w_i(t^2)",
+			   n,
+			   n,
+			   n - 1);
 	fmt::print("\r\n                                           = {}\r\n",
 			   fmt::format("{:t}", poly));
 	fmt::print("Interpolation parameter: t = (x - x{}) / h\r\n", n);

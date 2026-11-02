@@ -31,8 +31,11 @@ namespace detail {
 		SizeType n = nodes.size() / 2;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < 2 * n - 1; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		EquidistantHistory history{};
@@ -69,8 +72,11 @@ namespace detail {
 		SizeType n = nodes.size() / 2;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < 2 * n - 1; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		Polynomial result(2 * n, 0.0);
@@ -219,11 +225,10 @@ auto display_Bessel_interpolation(const RealList &nodes, const RealList &values)
 	detail::render_Bessel_interpolation(history);
 
 	const auto poly = Bessel_polynomial(history);
-	fmt::print(
-		"\r\nBessel interpolated polynomials: P(x) = P(x{} + (u + 0.5)h) = Q(u) = ∑[i=0,{}] "
-		"[c_(2i)/(2i)! * w_i(u^2) + c_(2i+1)/(2i+1)! * u*w_i(u^2)]",
-		n - 1,
-		n - 1);
+	fmt::print("\r\nBessel interpolated polynomials: P(x) = P(x{} + (u + 0.5)h) = Q(u) = ∑[i=0,{}] "
+			   "[c_(2i)/(2i)! * w_i(u^2) + c_(2i+1)/(2i+1)! * u*w_i(u^2)]",
+			   n - 1,
+			   n - 1);
 	fmt::print("\r\n                                      = {}\r\n", fmt::format("{:u}", poly));
 	fmt::print("Interpolation parameter: u = (x - x{}) / h - 0.5\r\n", n - 1);
 	fmt::print("x{} = {}\r\n", n - 1, nodes[n - 1]);

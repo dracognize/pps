@@ -263,8 +263,11 @@ namespace detail {
 		SizeType n = nodes.size() - 1;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < n; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		EquidistantHistory history{};
@@ -302,8 +305,11 @@ namespace detail {
 		SizeType n = nodes.size() - 1;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < n; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		Polynomial result(n + 1, 0.0);
@@ -393,8 +399,11 @@ namespace detail {
 		SizeType n = nodes.size() - 1;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < n; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		EquidistantHistory history{};
@@ -432,8 +441,11 @@ namespace detail {
 		SizeType n = nodes.size() - 1;
 		Real	 h = nodes[1] - nodes[0];
 		for (SizeType i = 1; i < n; ++i) {
-			if (nodes[i + 1] - nodes[i] != h)
+			const Real hi = nodes[i + 1] - nodes[i];
+
+			if (std::abs(hi - h) > config::kNearZeroThreshold) {
 				return {};
+			}
 		}
 
 		Polynomial result(n + 1, 0.0);
