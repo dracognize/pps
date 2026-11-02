@@ -212,11 +212,17 @@ auto display_linear_lsp(const RealList &nodes, const RealList &values, LspErrorT
 	const Eigen::MatrixXd design = detail::find_design_matrix(nodes, basis);
 	const RealList		  coeffs = detail::find_approximation_coefficients(nodes, values, basis);
 	Eigen::MatrixXd		  coeffs_matrix(static_cast<Eigen::Index>(coeffs.size()), 1);
+	const Eigen::VectorXd target =
+		Eigen::Map<const Eigen::VectorXd>(values.data(), static_cast<Eigen::Index>(values.size()));
 	for (SizeType i = 0; i < coeffs.size(); ++i)
 		coeffs_matrix(static_cast<Eigen::Index>(i), 0) = coeffs[i];
 
 	fmt::print("Linear least-squares design matrix Φ (order: | x | 1 |):\n");
 	print_matrix_box(design);
+	fmt::print("Matrix M = Φ^T * Φ:\n");
+	print_matrix_box(design.transpose() * design);
+	fmt::print("Matrix Φ^T * y:\n");
+	print_matrix_box(design.transpose() * target);
 	fmt::print("\nLinear least-squares coefficient matrix [a b]^T = (Φ^T * Φ)^(-1) * Φ^T * y\n");
 	print_matrix_box(coeffs_matrix);
 	fmt::print("\nApproximation function F(x) = {}\n", Polynomial({coeffs[1], coeffs[0]}));
@@ -236,11 +242,17 @@ auto display_quadratic_lsp(const RealList &nodes, const RealList &values, LspErr
 	const Eigen::MatrixXd design = detail::find_design_matrix(nodes, basis);
 	const RealList		  coeffs = detail::find_approximation_coefficients(nodes, values, basis);
 	Eigen::MatrixXd		  coeffs_matrix(static_cast<Eigen::Index>(coeffs.size()), 1);
+	const Eigen::VectorXd target =
+		Eigen::Map<const Eigen::VectorXd>(values.data(), static_cast<Eigen::Index>(values.size()));
 	for (SizeType i = 0; i < coeffs.size(); ++i)
 		coeffs_matrix(static_cast<Eigen::Index>(i), 0) = coeffs[i];
 
 	fmt::print("Quadratic least-squares design matrix Φ (order: | x^2 | x | 1 |):\n");
 	print_matrix_box(design);
+	fmt::print("Matrix M = Φ^T * Φ:\n");
+	print_matrix_box(design.transpose() * design);
+	fmt::print("Matrix Φ^T * y:\n");
+	print_matrix_box(design.transpose() * target);
 	fmt::print("\nQuadratic least-squares coefficient matrix [a b c]^T = (Φ^T * Φ)^(-1) * "
 			   "Φ^T * y\n:\n");
 	print_matrix_box(coeffs_matrix);
@@ -258,11 +270,17 @@ auto display_general_lsp(const RealList		 &nodes,
 	const Eigen::MatrixXd design = detail::find_design_matrix(nodes, basis);
 	const RealList		  coeffs = detail::find_approximation_coefficients(nodes, values, basis);
 	Eigen::MatrixXd		  coeffs_matrix(static_cast<Eigen::Index>(coeffs.size()), 1);
+	const Eigen::VectorXd target =
+		Eigen::Map<const Eigen::VectorXd>(values.data(), static_cast<Eigen::Index>(values.size()));
 	for (SizeType i = 0; i < coeffs.size(); ++i)
 		coeffs_matrix(static_cast<Eigen::Index>(i), 0) = coeffs[i];
 
 	fmt::print("General least-squares design matrix Φ [φ_(ij) = Φ_j(x_i)]:\n");
 	print_matrix_box(design);
+	fmt::print("Matrix M = Φ^T * Φ:\n");
+	print_matrix_box(design.transpose() * design);
+	fmt::print("Matrix Φ^T * y:\n");
+	print_matrix_box(design.transpose() * target);
 	fmt::print("\nGeneral least-squares coefficient matrix [alpha_i]^T:\n");
 	print_matrix_box(coeffs_matrix);
 
