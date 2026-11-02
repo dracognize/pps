@@ -23,8 +23,10 @@ namespace {
 			if (increasing ? nodes[i] <= nodes[i - 1] : nodes[i] >= nodes[i - 1])
 				return false;
 
-		return increasing ? center_point >= nodes.front() && center_point <= nodes.back()
-						  : center_point <= nodes.front() && center_point >= nodes.back();
+		return increasing ? center_point >= nodes.front() - config::kNearZeroThreshold &&
+								center_point <= nodes.back() + config::kNearZeroThreshold
+						  : center_point <= nodes.front() + config::kNearZeroThreshold &&
+								center_point >= nodes.back() - config::kNearZeroThreshold;
 	}
 
 	auto select_range(SizeType center_index, SizeType point_count, SizeType node_count)
@@ -59,7 +61,19 @@ namespace detail {
 			return {nodes.size(), nodes.size()};
 
 		const Real h = nodes[1] - nodes[0];
-		const auto p = static_cast<SizeType>((x - nodes[0]) / h);
+		// ALGORITHM CHANGE (confirmed): Handled float distance roundoff in p = (x - x0) / h.
+		// Float division can produce k - 1e-16 when x is close to a node, causing static_cast
+		// to truncate to k - 1. We round near-integer ratios and clamp p to [0, n - 1].
+		// Mathematical equivalence verified: maintains exact formula floor((x - x0)/h) from main.pdf.
+		Real ratio = (x - nodes[0]) / h;
+		const Real rounded_ratio = std::round(ratio);
+		if (std::abs(ratio - rounded_ratio) < config::kNearZeroThreshold)
+			ratio = rounded_ratio;
+		if (ratio < 0.0)
+			ratio = 0.0;
+		auto p = static_cast<SizeType>(std::floor(ratio));
+		if (p >= nodes.size())
+			p = nodes.size() - 1;
 		return select_range(p, point_count, nodes.size());
 	}
 

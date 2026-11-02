@@ -277,9 +277,9 @@ auto main() -> int {
 
 		/// @brief Quadratic least squares approximation
 		{
-			// RealList x = {};
-			// RealList y = {};
-			// auto error_type = LspErrorType::RMSE;
+			// RealList x			= {};
+			// RealList y			= {};
+			// auto	 error_type = LspErrorType::RMSE;
 			// ih::data_point_input(x, y);
 
 			// display_quadratic_lsp(x, y, error_type);
@@ -302,6 +302,18 @@ auto main() -> int {
 			// 	   [](Real x) { return log(x) / log(2); }};
 
 			// display_general_lsp(x, y, phi, error_type);
+		}
+
+		/// @brief Calculate error of approximate function F(x)
+		{
+			// FunctionsList F			 = {[](Real x){return x;}};
+			// LspErrorType  error_type = LspErrorType::RMSE;
+			// RealList	  a			 = {1};
+			// RealList	  x			 = {};
+			// RealList	  y			 = {};
+			// ih::data_point_input(x, y);
+
+			// detail::render_lsp_error(x, y, F, a, error_type);
 		}
 	}
 }

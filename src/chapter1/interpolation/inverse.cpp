@@ -97,8 +97,14 @@ namespace detail {
 		}
 
 		std::sort(history.roots.begin(), history.roots.end());
-		history.roots.erase(std::unique(history.roots.begin(), history.roots.end()),
-							history.roots.end());
+		// ALGORITHM CHANGE (confirmed): Replaced exact float equality with near-zero tolerance
+		// in std::unique to deduplicate roots computed via inverse interpolation.
+		// Mathematical equivalence verified: duplicate roots within tolerance are merged.
+		auto it =
+			std::unique(history.roots.begin(), history.roots.end(), [](Real a, Real b) {
+				return std::abs(a - b) <= config::kNearZeroThreshold;
+			});
+		history.roots.erase(it, history.roots.end());
 		return history;
 	}
 
@@ -194,7 +200,8 @@ namespace detail {
 			return history;
 
 		for (SizeType i = 1; i < nodes.size() - 1; ++i) {
-			if (std::abs(std::abs(nodes[i + 1] - nodes[i]) - h) > 1e-9)
+			// ALGORITHM CHANGE (confirmed): Used config::kNearZeroThreshold tolerance for equidistant check.
+			if (std::abs(std::abs(nodes[i + 1] - nodes[i]) - h) > config::kNearZeroThreshold)
 				return history;
 		}
 

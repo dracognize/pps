@@ -50,17 +50,38 @@ auto Polynomial::operator*(const Polynomial &other) const -> Polynomial {
 }
 
 auto SplineFunction::value(const Real &key) const -> Real {
-	if (key < nodes.front() || key > nodes.back())
+	if (nodes.size() < 2 || piecewise_poly.empty())
+		throw std::invalid_argument("SplineFunction has insufficient nodes");
+
+	if (key < nodes.front() - config::kNearZeroThreshold ||
+		key > nodes.back() + config::kNearZeroThreshold)
 		throw std::out_of_range("SplineFunction evaluation point is outside the node range");
 
-	auto	 interval = std::lower_bound(nodes.begin(), nodes.end(), key);
-	SizeType index	  = static_cast<SizeType>(interval - nodes.begin());
+	Real eval_key = key;
+	if (eval_key < nodes.front())
+		eval_key = nodes.front();
+	if (eval_key > nodes.back())
+		eval_key = nodes.back();
+
+	// ALGORITHM CHANGE (confirmed): Replaced std::lower_bound with upper_bound offset
+	// to select the correct interval [x_i, x_{i+1}] for key. When key == nodes.back(),
+	// index is clamped to the last segment (nodes.size() - 2) to prevent out-of-bounds access.
+	auto interval = std::upper_bound(nodes.begin(), nodes.end(), eval_key);
+	SizeType index = 0;
+	if (interval == nodes.begin()) {
+		index = 0;
+	} else {
+		index = static_cast<SizeType>(interval - nodes.begin() - 1);
+		if (index >= piecewise_poly.size()) {
+			index = piecewise_poly.size() - 1;
+		}
+	}
 
 	const Polynomial &poly = piecewise_poly[index];
 
 	Real result = 0;
 	for (auto it = poly.rbegin(); it != poly.rend(); ++it)
-		result = *it + result * (key - nodes[index]);
+		result = *it + result * (eval_key - nodes[index]);
 	return result;
 }
 
